@@ -11,10 +11,10 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 
 ### Install stuff for working with project
 1. Node.js
-2. Compass *(server side CSS munging)*
-⋅⋅* This requires installing Ruby
+2. Compass *(server side CSS munging)* 
+ * This requires installing Ruby
 3. Yeoman
-⋅⋅* This is a npm install, which also installs Bower and Grunt
+ * This is a npm install, which also installs Bower and Grunt
 
 ### Build project for development & preview locally
 1. `cd [project root]`
