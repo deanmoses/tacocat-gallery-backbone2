@@ -101,6 +101,8 @@ var Router = Backbone.Router.extend({
 	 * Helper method to normalize paths
 	 */
 	normalizePath: function(path) {
+		if (!path) return "";
+
 		// strip any trailing slash
 		path = path.replace(/\/$/, "");
 
