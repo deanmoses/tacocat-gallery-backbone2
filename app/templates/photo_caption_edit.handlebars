@@ -1,0 +1,43 @@
+<link type="text/css" rel="stylesheet" href="app/styles/css/editor/stylesheet.css" />
+<div class="caption-edit-controls">
+	<input type="text" name="title" value="{{{title}}}" />
+	
+	<div id="wysihtml5-editor-toolbar">
+		<header>
+			<ul class="commands">
+				<li data-wysihtml5-command="bold" title="Make text bold (CTRL + B)" class="command"></li>
+				<li data-wysihtml5-command="italic" title="Make text italic (CTRL + I)" class="command"></li>
+				<!--<li data-wysihtml5-command="underline" title="Make text underline (CTRL + U)" class="command"></li>-->
+				<li data-wysihtml5-command="insertUnorderedList" title="Insert an unordered list" class="command"></li>
+				<li data-wysihtml5-command="createLink" title="Insert a link" class="command"></li>
+				<li data-wysihtml5-action="change_view" title="Show HTML" class="action"></li>
+			</ul>
+		</header>
+		<div data-wysihtml5-dialog="createLink" style="display: none;">
+			<label>
+				Link:
+				<input data-wysihtml5-dialog-field="href" value="http://">
+			</label>
+			<a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a>
+		</div>
+		
+		<div data-wysihtml5-dialog="insertImage" style="display: none;">
+			<label>
+				Image:
+				<input data-wysihtml5-dialog-field="src" value="http://">
+			</label>
+			<a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a>
+		</div>
+	</div>
+	
+	<section>
+		<textarea id="caption" spellcheck="true" wrap="on" autofocus placeholder="Enter caption ...">
+			{{{description}}}
+		</textarea>
+	</section>
+	
+	<div class="button-group">
+	 	<a class="button cancel">Cancel</a>
+        <a class="button submit success active">Save</a>
+    </div>
+</div>

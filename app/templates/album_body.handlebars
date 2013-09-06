@@ -1,0 +1,22 @@
+{{#if album.description}}
+<section class="caption">
+	<h1 class="hidden">Overview</h1>
+	{{{album.description}}}
+</section>
+{{/if}}
+<div class="container-table">
+	{{#if album.firsts}}
+	<div class="firsts-container">
+		<section class="firsts">
+			<h1 class="hidden">Firsts</h1>
+			{{#each album.firsts}}
+				<p><span>{{what}}</span>{{when}}{{#if who}} ({{who}}){{/if}}</p>
+			{{/each}}
+		</section>
+	</div>
+	{{/if}}
+	<section class="thumbnails">
+		<h1 class="hidden">Pictures</h1>
+		{{{thumbnails}}}
+	</section>
+</div>

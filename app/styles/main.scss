@@ -1,0 +1,447 @@
+@import "compass/reset";
+@import "compass/css3";
+@import "fonts";
+@import "utilities";
+
+$titleColor: #fff;
+
+html, body, #main, .body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+html {
+	font-family: "HelveticaNeue", Arial, sans-serif;
+	font-size: 14px;
+	color: $colorTextPrimary;
+
+	-webkit-font-smoothing: antialiased;
+}
+
+a,
+a:before {
+	color: inherit;
+	text-decoration: none;
+}
+
+a:hover,
+a:hover:before,
+a:hover:after,
+a.active,
+a.active:before,
+a.active:after {
+	//color: $colorPrimaryHover !important;
+}
+
+//
+//
+//
+
+#waiting {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: rgba(255,255,255,0.8);
+	cursor: wait;
+	
+	&.on {
+		display: block;
+	}
+}
+
+//
+// OVERALL PAGE STRUCTURE
+// The container table is used to layout the overall page
+//
+
+.container-table {
+    display: table;
+    height: 100%;
+    width: 100%;
+	overflow: hidden;	
+}
+	
+.container-table-row {
+	display: table-row;
+}
+
+.container-table-cell {
+	display: table-cell;
+}
+
+// the image resizing javascript just won't respect margin or padding on lower elements
+// dunno why this works
+.photo .container-table-cell {
+	padding-right: 1em;
+	padding-bottom: 1em;
+}
+
+#header, #body {
+	padding: 1em;
+}
+
+#header {
+	position: relative;
+	color: white;
+	background-color: $colorTextPrimary;
+
+	h1 {
+		display: inline-block;
+		font-family: 'VAGRoundedBT-Regular';
+		font-size: 1.8em;
+		color: $titleColor;
+		letter-spacing: -.02em;
+	}
+	
+	.admin-controls {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		font-size: smaller;
+		color: $titleColor;
+		padding-left: 1.3em;
+		min-height: 1.7em;
+		min-width: 20em;
+		
+		a {
+			display: none;
+			cursor: pointer;
+		}
+		
+		// show the edit controls on hover by an admin
+		&:hover a {
+			display: inline;
+		}
+		
+		:not(:last-child):after {
+			content: " | ";
+			color: #888;
+		}
+	}
+	
+	// SHOULD be ony defined in editor/stylesheet.css,
+	// but the wysihtml5 editor JS needs it before that's
+	// loaded
+	.caption-edit-controls {
+		textarea {
+			width: 100%;
+		}
+	}
+}
+
+#secondary-header {
+	padding: 0.75em 1em;
+	background-color: #383c41;
+	border-bottom: 1px solid #1b1e21;
+	border-top: 1px solid black;
+	
+	.years {
+		color: $titleColor;
+
+		:not(:last-child):after {
+   			content: " | ";
+   			color: #666;
+   		}
+   		
+   		a:hover {
+	   		cursor: pointer;
+   		}
+	}
+}
+
+#body {
+	height: 100%;
+	overflow: hidden;
+}
+
+
+/**
+ * ALBUM PAGE STYLING
+ */
+
+.album {
+	height: 100%;
+
+	#body {
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+}
+
+.thumbnail {
+	margin: 1em;
+	vertical-align: top;
+	
+	img {
+		border: solid black 1px;
+	}
+	.title {
+		font-weight: bold;
+	}
+	.summary {
+		margin-top: 0.3em;
+	}
+}
+
+.album.year .thumbnails {
+
+	.month {
+		display: block;
+		margin: 1em;
+		
+		& > h1 {
+			font-weight: bold;
+			font-size: 1.3em;
+			background: #EEE;
+			border-radius: 1em;
+			padding: 0.3em 1em;
+			width: 100%;
+		}
+	}
+}
+
+.album.root .thumbnails {
+	.thumbnail {
+		a {
+			vertical-align: top;
+			font-size: 1.5em;
+			padding-left: 0.5em;
+			
+			h1 {
+				display: inline;
+				vertical-align: top;
+			}
+		}
+	}
+}
+
+.album.week .thumbnails {
+	.thumbnail {
+		display: inline-block;
+		a {
+			display: block;
+		}
+	}
+}
+
+.album.year {
+	#body {
+		padding: 0;
+	}
+	
+	.thumbnails {
+		display: table-cell;
+		width: 100%;
+		
+		.thumbnail {
+			display: inline-block;
+			a {
+				display: block;
+			}
+		}
+	}
+	
+	.firsts-container {
+		display: table-cell;
+		
+		@media all and (max-width: 500px) {
+			display: none;
+		}
+	}
+	
+	.firsts {
+		min-width: 12em;
+		border-top-right-radius: 1em;
+		border-bottom-right-radius: 1em;
+		margin-top: 1em;
+		padding: 1em;
+		background: #EEE;
+		height: 100%;
+		
+		p {
+			margin-bottom: 1em;
+		}
+		
+		span {
+			display: block;
+			margin-bottom: 0.1em;
+			font-style: italic;
+		}
+	}
+}
+
+/**
+ * PHOTO PAGE STYLING
+ */
+@media all and (min-width: 1000px) {
+	.photo.sidebar-text {
+		#body {
+			display: table;
+			table-layout: fixed;
+			width: 100%;
+		}
+		
+		.caption {
+			display: table-cell;
+			width: 26em;
+			//padding: 1em 0;
+		}
+		
+		.photo-container {
+			display: table-cell;
+			//padding: 1em;
+		}
+	}
+}
+
+.photo-container {
+	position: relative;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding-right: 1em;
+
+	img {
+		display: none;
+		position: absolute;
+		width: 100%;
+	}
+}
+
+/*
+ * PHOTO & ALBUM CAPTIONS
+ */
+.photo.top-text .caption {
+	//margin: 0.5em 0;
+}
+.photo .caption {
+	padding-bottom: 0.5em;
+}
+.album .caption {
+	margin: 0.5em 1em;
+}
+.caption {
+	font-size: 16px;
+	//font-size: 1.3em;
+	font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	color: #111;
+	line-height: 1.3;
+	text-rendering: optimizeLegibility;
+	
+	p {
+		margin-top: 0.7em;
+	}
+	
+	li {
+	  line-height: 1.5;
+	}
+	
+	a {
+	  color: inherit;
+	}
+	
+	strong, b {
+	  font-weight: bold;
+	}
+	
+	i, em {
+	  font-style: italic;
+	}
+	
+	li {
+	  margin-left: 30px;
+	}
+	
+	ul li {
+	  list-style: disc outside;
+	}
+	
+	ol li {
+	  list-style: decimal outside;
+	}
+	
+	li img {
+	  vertical-align: middle;
+	  margin: 2px 5px 5px 0;
+	}
+	
+	cite {
+		font-style: italic;
+	}
+	
+	//
+	// The .wysiwyg styles are in support of caption content added 
+	// by the wysihtml5 rich text editor
+	//
+	
+	.wysiwyg-color-black {
+	  color: black;
+	}
+	
+	.wysiwyg-color-silver {
+	  color: silver;
+	}
+	
+	.wysiwyg-color-gray {
+	  color: gray;
+	}
+	
+	.wysiwyg-color-white {
+	  color: white;
+	}
+	
+	.wysiwyg-color-maroon {
+	  color: maroon;
+	}
+	
+	.wysiwyg-color-red {
+	  color: red;
+	}
+	
+	.wysiwyg-color-purple {
+	  color: purple;
+	}
+	
+	.wysiwyg-color-fuchsia {
+	  color: fuchsia;
+	}
+	
+	.wysiwyg-color-green {
+	  color: green;
+	}
+	
+	.wysiwyg-color-lime {
+	  color: lime;
+	}
+	
+	.wysiwyg-color-olive {
+	  color: olive;
+	}
+	
+	.wysiwyg-color-yellow {
+	  color: yellow;
+	}
+	
+	.wysiwyg-color-navy {
+	  color: navy;
+	}
+	
+	.wysiwyg-color-blue {
+	  color: blue;
+	}
+	
+	.wysiwyg-color-teal {
+	  color: teal;
+	}
+	
+	.wysiwyg-color-aqua {
+	  color: aqua;
+	}
+}
+
+@import "years";

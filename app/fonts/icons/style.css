@@ -1,0 +1,146 @@
+@font-face {
+	font-family: 'icomoon';
+	src:url('icomoon.eot');
+	src:url('icomoon.eot?#iefix') format('embedded-opentype'),
+		url('icomoon.svg#icomoon') format('svg'),
+		url('icomoon.woff') format('woff'),
+		url('icomoon.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Use the following CSS code if you want to use data attributes for inserting your icons */
+[data-icon]:before {
+	font-family: 'icomoon';
+	content: attr(data-icon);
+	speak: none;
+	font-weight: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Use the following CSS code if you want to have a class per icon */
+/*
+Instead of a list of all class selectors,
+you can use the generic selector below, but it's slower:
+[class*="icon-"]:before {
+*/
+.icon-tasks:before, .icon-tabletscale:before, .icon-tablet:before, .icon-search:before, .icon-report:before, .icon-remove:before, .icon-profile:before, .icon-plus:before, .icon-pagelayout5:before, .icon-pagelayout4:before, .icon-pagelayout3:before, .icon-pagelayout2:before, .icon-pagelayout1:before, .icon-move:before, .icon-mobilescale:before, .icon-mobile:before, .icon-message:before, .icon-link:before, .icon-groups:before, .icon-grab:before, .icon-following:before, .icon-followers:before, .icon-file:before, .icon-edit:before, .icon-dropwdownarrow:before, .icon-desktopscale:before, .icon-desktop:before, .icon-carrot:before, .icon-arrow:before, .icon-analytics:before, .icon-circlegraph2:before, .icon-circlegraph1:before, .icon-close:before, .icon-timeoff:before, .icon-lead:before, .icon-contact:before, .icon-case:before {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+}
+.icon-tasks:before {
+	content: "\e000";
+}
+.icon-tabletscale:before {
+	content: "\e001";
+}
+.icon-tablet:before {
+	content: "\e002";
+}
+.icon-search:before {
+	content: "\e003";
+}
+.icon-report:before {
+	content: "\e004";
+}
+.icon-remove:before {
+	content: "\e005";
+}
+.icon-profile:before {
+	content: "\e006";
+}
+.icon-plus:before {
+	content: "\e007";
+}
+.icon-pagelayout5:before {
+	content: "\e008";
+}
+.icon-pagelayout4:before {
+	content: "\e009";
+}
+.icon-pagelayout3:before {
+	content: "\e00a";
+}
+.icon-pagelayout2:before {
+	content: "\e00b";
+}
+.icon-pagelayout1:before {
+	content: "\e00c";
+}
+.icon-move:before {
+	content: "\e00d";
+}
+.icon-mobilescale:before {
+	content: "\e00e";
+}
+.icon-mobile:before {
+	content: "\e00f";
+}
+.icon-message:before {
+	content: "\e010";
+}
+.icon-link:before {
+	content: "\e011";
+}
+.icon-groups:before {
+	content: "\e012";
+}
+.icon-grab:before {
+	content: "\e013";
+}
+.icon-following:before {
+	content: "\e014";
+}
+.icon-followers:before {
+	content: "\e015";
+}
+.icon-file:before {
+	content: "\e016";
+}
+.icon-edit:before {
+	content: "\e017";
+}
+.icon-dropwdownarrow:before {
+	content: "\e018";
+}
+.icon-desktopscale:before {
+	content: "\e019";
+}
+.icon-desktop:before {
+	content: "\e01a";
+}
+.icon-carrot:before {
+	content: "\e01b";
+}
+.icon-arrow:before {
+	content: "\e01c";
+}
+.icon-analytics:before {
+	content: "\e01d";
+}
+.icon-circlegraph2:before {
+	content: "\e01e";
+}
+.icon-circlegraph1:before {
+	content: "\e01f";
+}
+.icon-close:before {
+	content: "\e020";
+}
+.icon-timeoff:before {
+	content: "\e021";
+}
+.icon-lead:before {
+	content: "\e022";
+}
+.icon-contact:before {
+	content: "\e023";
+}
+.icon-case:before {
+	content: "\e024";
+}

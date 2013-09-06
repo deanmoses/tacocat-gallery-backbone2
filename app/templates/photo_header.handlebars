@@ -1,0 +1,14 @@
+{{!
+	The header HTML for the photo page
+}}
+<h1><a href="#v/">{{{title}}}</a></h1>
+<nav class="button-group float-right">
+	<h1 class="hidden">Photo Navigation</h1>
+ 	<a class="button" {{#if prevPhoto}}href="#{{prevPhoto.url}}"{{/if}}>&#x2039; Prev</a>
+    <a class="button" href="#{{album.url}}">Album</a>
+    <a class="button" {{#if nextPhoto}}href="#{{nextPhoto.url}}"{{/if}}>Next &#x203A;</a>
+</nav>
+<div class="admin-controls">
+	<a class="caption-button">caption</a>
+	<a target="edit" href="http://tacocat.com/pictures/main.php?g2_view=core.ItemAdmin&g2_subView=core.ItemEdit&g2_itemId={{id}}">edit</a>
+</div>

@@ -1,0 +1,24 @@
+# SASS intermediate compile files
+*.scssc
+
+# SASS cache directory
+.sass-cache/
+
+# grunt.js distribution directory
+dist/
+.tmp/
+
+#node package installation dir
+node_modules/
+
+#bower package installation dir
+app/bower_components/
+
+# temporary editor save files
+*~
+
+# OSX thumnail caches
+.DS_Store
+
+# log files
+*.log

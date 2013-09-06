@@ -1,0 +1,27 @@
+{{! 
+	Layout for most pages of app.
+	
+	The header is flexible height.
+	The body takes 100% of the rest of the height.
+}}
+<div class="container-table {{pageType}}">
+	<div class="container-table-row header">
+		<div class="container-table-cell" id="header">
+			{{{header}}}
+		</div>
+	</div>
+	{{#if secondaryHeader}}
+	<div class="container-table-row secondary-header">
+		<div class="container-table-cell" id="secondary-header">
+			{{{secondaryHeader}}}
+		</div>
+	</div>
+	{{/if}}
+	<div class="container-table-row body">
+		<div class="container-table-cell">
+			<div id="body">
+				{{{body}}}
+			</div>
+		</div>
+	</div>
+</div>
