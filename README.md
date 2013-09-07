@@ -5,16 +5,18 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 
 ## How To Work With Project On A New Box
 
-### Get project
-1. Install git
-2. `git checkout [url to this git project]`
-
 ### Install stuff for working with project
-1. Node.js
-2. Compass *(server side CSS munging)* 
- * This requires installing Ruby
-3. Yeoman
- * This is a npm install, which also installs Bower and Grunt
+1. [Git](http://git-scm.com/) - *needed to retrieve this project from github*
+2. [Node.js](http://nodejs.org/) - *needed to manage development tools & run dev webserver.  Not used at runtime*
+3. [Compass](http://compass-style.org/) - *SASS CSS processor* 
+ * This will require installing Ruby
+4. [Yeoman](http://yeoman.io/) - *command-line web development tool suite*
+ * This installs the following automatically:
+ * [Bower](http://bower.io/) - *javascript package manager*
+ * [Grunt](http://gruntjs.com/) - *build and dev task runner*
+
+### Get project
+1. Get local copy of this project:  `git clone [address of this git project]`
 
 ### Build project for development & preview locally
 1. `cd [project root]`
