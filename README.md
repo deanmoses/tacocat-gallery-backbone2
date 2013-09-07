@@ -10,15 +10,17 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 2. [Node.js](http://nodejs.org/) - *Node.js server.  Needed to manage development tools & run dev webserver.  Not used at runtime*
 3. [Compass](http://compass-style.org/) - *SASS CSS processor* 
  * This will require installing Ruby.  I highly recommend using [RVM](https://rvm.io/) instead installing Ruby directly.
-4. [Yeoman](http://yeoman.io/) - *command-line web development tool suite*
+4. [Yeoman 1.0](http://yeoman.io/) - *command-line web development tool suite*
  * This installs the following automatically:
  * [Bower](http://bower.io/) - *javascript package manager*
  * [Grunt](http://gruntjs.com/) - *build and dev task runner*
 
 ### Get project
-Get local copy of this project
-`cd [directory that will be parent of project directory]`
-`git clone [github address of this project]`
+
+`cd [parent of desired project directory]`
+
+`git clone https://github.com/deanmoses/tacocat-gallery-backbone2.git` - *gets local copy of this project*
+
 `npm install` - *downloads and installs Node.js packages that project depends on, like Grunt*
 
 ### Run development server & preview locally
