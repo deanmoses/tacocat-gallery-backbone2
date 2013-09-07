@@ -41,3 +41,12 @@ Simply edit the files.  If you ran `grunt server` and the web browser is tuned t
 `grunt build` - *compiles production version and sticks in [project root/]dist/*
 
 ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have to change some variables in `app/scripts/main.js`
+
+### Project Structure
+
+   * /package.json:  the node.js dependency file
+      * this is what specifies all the server tools, like Grunt
+      * the actual packages are installed in /node_modules/
+   * /bower.json:  the bower dependency file
+      * this is what specifies all the app dependencies, like backbone and lodash
+      * the actual packages are installed in /app/bower_components/
