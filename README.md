@@ -6,8 +6,8 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 ## How To Work With Project
 
 ### Install stuff for working with project
-1. [Git](http://git-scm.com/) - *needed to retrieve this project from github*
-2. [Node.js](http://nodejs.org/) - *needed to manage development tools & run dev webserver.  Not used at runtime*
+1. [Git](http://git-scm.com/) - *Source control tool.  Needed to retrieve this project from github.com*
+2. [Node.js](http://nodejs.org/) - *Node.js server.  Needed to manage development tools & run dev webserver.  Not used at runtime*
 3. [Compass](http://compass-style.org/) - *SASS CSS processor* 
  * This will require installing Ruby.  I highly recommend using [RVM](https://rvm.io/) instead installing Ruby directly.
 4. [Yeoman](http://yeoman.io/) - *command-line web development tool suite*
@@ -17,15 +17,15 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 
 ### Get project
 Get local copy of this project
-1. `cd [directory that will be parent of project directory]`
-2. `git clone [github address of this project]`
+`cd [directory that will be parent of project directory]`
+`git clone [github address of this project]`
+`npm install` - *downloads and installs Node.js packages that project depends on, like Grunt*
 
-### Build project for development & preview locally
+### Run development server & preview locally
 1. `cd [project root]`
-2. `grunt` *(build project)*
-3. `grunt server` *(starts server and pops up browser with index page, and autorefreshes browser each time a file changes)*
+3. `grunt server` *(starts server and pops up browser with index page.  This autorefreshes browser each time a file changes)*
 
-### Build project for production and deploy to Tacocat [WORK IN PROGRESS - HANDLEBAR TEMPLATES AND FIRSTS.PHP ARENT THERE YET]
+### Build project for production and deploy to tacocat.com [WORK IN PROGRESS - HANDLEBAR TEMPLATES AND FIRSTS.PHP ARENT THERE YET]
 1. `cd [project root]`
-2. `grunt build` *(compiles production version and sticks in dist/)*
+2. `grunt build` *(compiles production version and sticks in [project root/]dist/)*
 3. ftp dist/* to wherever you want it on tacocat.com
