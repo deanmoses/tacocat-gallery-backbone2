@@ -16,7 +16,9 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
  * [Grunt](http://gruntjs.com/) - *build and dev task runner*
 
 ### Get project
-1. Get local copy of this project:  `git clone [address of this git project]`
+Get local copy of this project
+1. `cd [directory that will be parent of project directory]`
+2. `git clone [github address of this project]`
 
 ### Build project for development & preview locally
 1. `cd [project root]`
