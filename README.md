@@ -21,13 +21,20 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 
 `git clone https://github.com/deanmoses/tacocat-gallery-backbone2.git` - *gets local copy of this project*
 
-`npm install` - *downloads and installs Node.js packages that project depends on, like Grunt*
+`cd [project root]`
+
+`npm install` - *downloads and installs Node.js packages that project depends on, like Grunt.js*
 
 ### Run development server & preview locally
-1. `cd [project root]`
-3. `grunt server` *(starts server and pops up browser with index page.  This autorefreshes browser each time a file changes)*
+
+`cd [project root]`
+
+`grunt server` *(starts server and pops up browser with index page.  This autorefreshes browser each time a file changes)*
 
 ### Build project for production and deploy to tacocat.com [WORK IN PROGRESS - HANDLEBAR TEMPLATES AND FIRSTS.PHP ARENT THERE YET]
-1. `cd [project root]`
-2. `grunt build` *(compiles production version and sticks in [project root/]dist/)*
-3. ftp dist/* to wherever you want it on tacocat.com
+
+`cd [project root]`
+
+`grunt build` *(compiles production version and sticks in [project root/]dist/)*
+
+ftp `[project root]dist/*` to tacocat.com/p/  - if you want it someplace else, you'll have to change some variables in app/scripts/main.js
