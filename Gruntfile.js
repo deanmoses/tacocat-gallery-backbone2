@@ -186,11 +186,12 @@ module.exports = function (grunt) {
 		compile: {
 			options: {
 				// the namespace to which the precompiled templates will be assigned
-				namespace: "JST"
+				namespace: "JST",
+				wrapped: "true"
 			},
 			files: {
 				// path.to.target.compiled.file : path.to.source.files
-				'app/templates/templates.js': 'app/templates/**/*.handlebars',
+				'.tmp/scripts/templates.js': ['<%= yeoman.app %>/templates/**/*.handlebars']
 			}
 		}
 	},
@@ -274,13 +275,6 @@ module.exports = function (grunt) {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
         },
-        jst: {
-            compile: {
-                files: {
-                    '.tmp/scripts/templates.js': ['<%= yeoman.app %>/scripts/templates/*.ejs']
-                }
-            }
-        },
         rev: {
             dist: {
                 files: {
@@ -321,7 +315,7 @@ module.exports = function (grunt) {
             'clean:server',
             'coffee:dist',
             'createDefaultTemplate',
-            'jst',
+            'handlebars',
             'compass:server',
             'connect:livereload',
             'open',
@@ -333,7 +327,7 @@ module.exports = function (grunt) {
         'clean:server',
         'coffee',
         'createDefaultTemplate',
-        'jst',
+        'handlebars',
         'compass',
         'connect:test',
         'mocha'
@@ -344,7 +338,6 @@ module.exports = function (grunt) {
         'coffee',
         'createDefaultTemplate',
 	'handlebars',
-        'jst',
         'compass:dist',
         'useminPrepare',
         'imagemin',
