@@ -23,7 +23,9 @@ A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.or
 
 `cd [project root]`
 
-`npm install` - *downloads and installs Node.js packages that project depends on, like Grunt.js*
+`npm install` - *downloads and installs Node.js packages that project's development system depends on, like Grunt.js*
+
+`bower install` - *downloads and installs bower packages that the project's runtime depends on, like jQuery*
 
 ### Run development server & preview locally
 
