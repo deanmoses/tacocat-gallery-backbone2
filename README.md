@@ -27,6 +27,8 @@ A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.or
 
 `bower install` - *downloads and installs bower packages that the project's runtime depends on, like jQuery*
 
+`grunt` - *compile the app*
+
 ### Run development server & preview locally
 
 `cd [project root]`
