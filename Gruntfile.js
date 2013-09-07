@@ -56,7 +56,7 @@ module.exports = function (grunt) {
 		  'app/templates/**/*.handlebars'
 		],
 		tasks: 'handlebars reload'
-	    }
+	    },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
