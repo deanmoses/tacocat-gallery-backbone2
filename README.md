@@ -3,7 +3,7 @@ tacocat-gallery-backbone2
 
 Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, tablets and browsers.
 
-## How To Work With Project On A New Box
+## How To Work With Project
 
 ### Install stuff for working with project
 1. [Git](http://git-scm.com/) - *needed to retrieve this project from github*
