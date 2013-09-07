@@ -22,6 +22,6 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 3. `grunt server` *(starts server and pops up browser with index page, and autorefreshes browser each time a file changes)*
 
 ### Build project for production and deploy to Tacocat
-1. 'cd [project root]'
-2. 'grunt build' *(compiles production version and sticks in dist/)*
+1. `cd [project root]`
+2. `grunt build` *(compiles production version and sticks in dist/)*
 3. ftp dist/* to wherever you want it on tacocat.com
