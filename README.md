@@ -9,7 +9,7 @@ Front end for tacocat.com's Menalto gallery using Backbone.   Works on phones, t
 1. [Git](http://git-scm.com/) - *needed to retrieve this project from github*
 2. [Node.js](http://nodejs.org/) - *needed to manage development tools & run dev webserver.  Not used at runtime*
 3. [Compass](http://compass-style.org/) - *SASS CSS processor* 
- * This will require installing Ruby
+ * This will require installing Ruby.  I highly recommend using [RVM](https://rvm.io/) instead installing Ruby directly.
 4. [Yeoman](http://yeoman.io/) - *command-line web development tool suite*
  * This installs the following automatically:
  * [Bower](http://bower.io/) - *javascript package manager*
