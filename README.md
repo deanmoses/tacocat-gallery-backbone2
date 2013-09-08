@@ -33,13 +33,13 @@ A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.or
 ### Make changes, do development
 Simply edit the files.  If you ran `grunt server` and the web browser is tuned to the right page, the changes will show up instantly.
 
-### Build project for production and deploy to tacocat.com [WORK IN PROGRESS - HANDLEBAR TEMPLATES AND FIRSTS.PHP ARENT THERE YET]
+### Build project for production and deploy to tacocat.com
 
 `cd [project root]`
 
 `grunt build` - *compiles production version and sticks in [project root/]dist/*
 
-ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have to change some variables in `app/scripts/main.js`
+ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have to change a variable in `app/scripts/firsts.js`
 
 ### Project Structure
 
