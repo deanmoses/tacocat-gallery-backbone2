@@ -43,9 +43,9 @@ ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if y
 
 ### Project Structure
 
-   * /package.json:  the node.js dependency file
+   * **/package.json**:  the node.js dependency file
       * this is what specifies all the server tools, like Grunt
       * the actual packages are installed in /node_modules/
-   * /bower.json:  the bower dependency file
+   * **/bower.json**:  the bower dependency file
       * this is what specifies all the app dependencies, like backbone and lodash
       * the actual packages are installed in /app/bower_components/
