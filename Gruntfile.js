@@ -51,30 +51,30 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass']
             },
-	    handlebars: {
-		files: [
-		  'app/templates/**/*.handlebars'
-		],
-		tasks: 'handlebars reload'
-	    },
-            livereload: {
-                options: {
-                    livereload: LIVERELOAD_PORT
-                },
-                files: [
-                    '<%= yeoman.app %>/*.html',
-                    '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
-                    '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
-                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}'
-                ]
-            },
-            jst: {
-                files: [
-                    '<%= yeoman.app %>/scripts/templates/*.ejs'
-                ],
-                tasks: ['jst']
-            }
-        },
+			handlebars: {
+				files: [
+					'app/templates/**/*.handlebars'
+				],
+				tasks: 'handlebars reload'
+			},
+			livereload: {
+				options: {
+					livereload: LIVERELOAD_PORT
+				},
+				files: [
+					'<%= yeoman.app %>/*.html',
+					'{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
+					'{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+					'<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}'
+				]
+			},
+			jst: {
+				files: [
+					'<%= yeoman.app %>/scripts/templates/*.ejs'
+				],
+				tasks: ['jst']
+			}
+		},
         connect: {
             options: {
                 port: 9000,
@@ -180,21 +180,21 @@ module.exports = function (grunt) {
                 }
             }
         },
-	// compile the Handlebars templates to JST files
-	// For more info on JST https://code.google.com/p/trimpath/wiki/JavaScriptTemplates
-	handlebars: {
-		compile: {
-			options: {
-				// the namespace to which the precompiled templates will be assigned
-				namespace: "JST",
-				wrapped: "true"
-			},
-			files: {
-				// path.to.target.compiled.file : path.to.source.files
-				'.tmp/scripts/templates.js': ['<%= yeoman.app %>/templates/**/*.handlebars']
+		// compile the Handlebars templates to JST files
+		// For more info on JST https://code.google.com/p/trimpath/wiki/JavaScriptTemplates
+		handlebars: {
+			compile: {
+				options: {
+					// the namespace to which the precompiled templates will be assigned
+					namespace: 'JST',
+					wrapped: 'true'
+				},
+				files: {
+					// path.to.target.compiled.file : path.to.source.files
+					'.tmp/scripts/templates.js': ['<%= yeoman.app %>/templates/**/*.handlebars']
+				}
 			}
-		}
-	},
+		},
         // not enabled since usemin task does concat and uglify
         // check index.html to edit your build targets
         // enable this task if you prefer defining your build targets here
@@ -337,7 +337,7 @@ module.exports = function (grunt) {
         'clean:dist',
         'coffee',
         'createDefaultTemplate',
-	'handlebars',
+		'handlebars',
         'compass:dist',
         'useminPrepare',
         'imagemin',

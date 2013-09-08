@@ -1,11 +1,15 @@
+'use strict';
+
 /**
- * This is the initial javascript file that's called by HTML page.
+ * The initial javascript called by the HTML page.
  *
- * I set up and kick off the app
+ * I set up and kick off the Backbone.js app
  */
 
+// tell JSHint to assume existence of these global vars
+/*global app, $, _, Backbone, Handlebars, alert, Router, Firsts, Authentication, Album, Photo*/
+
 // define the global variable 'app'
-/*global app, $*/
 window.app = {
 
 	/**
@@ -25,17 +29,17 @@ window.app = {
 	/**
 	 * The base of the URL for all JSON calls
 	 */
-	baseAjaxUrl: "http://tacocat.com/pictures/main.php?g2_view=",
+	baseAjaxUrl: 'http://tacocat.com/pictures/main.php?g2_view=',
 	
 	/**
 	 * Helper function to set the browser title
 	 */
 	setTitle: function(title) {
 		if (title) {
-			document.title = title + " - Dean, Lucie, Felix and Milo Moses";
+			document.title = title + ' - Dean, Lucie, Felix and Milo Moses';
 		}
 		else {
-			document.title = "Dean, Lucie, Felix and Milo Moses";
+			document.title = 'Dean, Lucie, Felix and Milo Moses';
 		}
 	},
 
@@ -46,10 +50,12 @@ window.app = {
 	 * @param context - the model attributes, or whatever data you pass to a template
 	 */
 	renderTemplate : function(templateId, context) {
-		//console.log("app.renderTemplate(["+templateId+"])");
+		//console.log('app.renderTemplate(['+templateId+'])');
 		var template = this.getTemplate(templateId);
 		//var template = Handlebars.getTemplate(templateId);
-		if (!template) throw "Error retrieving template [" + templateId + "]";
+		if (!template) {
+			throw 'Error retrieving template [' + templateId + ']';
+		}
 		return template(context);
 	},
 
@@ -60,7 +66,7 @@ window.app = {
 	 */
 	getTemplate : function(templateId) {
 		if (Handlebars.templates === undefined || Handlebars.templates[templateId] === undefined) {
-			//console.log("app.getTemplate("+templateId+"): fetching from server");
+			//console.log('app.getTemplate('+templateId+'): fetching from server');
 			$.ajax({
 				url : 'templates/' + templateId + '.handlebars',
 				async : false
@@ -70,7 +76,7 @@ window.app = {
 				}
 				Handlebars.templates[templateId] = Handlebars.compile(data);
 			}).fail(function(data, textStatus, jqXHR) {
-				throw "Failed to retrieve template [" + templateId + "]: " + jqXHR
+				throw 'Failed to retrieve template [' + templateId + ']: ' + jqXHR;
 			});
 		}
 		return Handlebars.templates[templateId];
@@ -82,14 +88,13 @@ window.app = {
 	 * Called when HTML page is fully loaded
 	 */
 	init: function () {
-		'use strict';
 		//console.log('main.js Backbone app.init()');
 
 		// Fetching this model will trigger a render of the authentication view,
 		// which writes some CSS classes into the body tag
 		app.Models.authenticationModel.fetch({
 			error : function(model, xhr, options) {
-				console.log("gallery.authentication.fetch() - error.  xhr: ", xhr);
+				console.log('gallery.authentication.fetch() - error.  xhr: ', xhr);
 			}
 		});
 
@@ -113,6 +118,5 @@ app.Models.firstsModel.fetch();
 app.Routers.main = new Router();
 
 $(document).ready(function () {
-    'use strict';
     app.init();
 });

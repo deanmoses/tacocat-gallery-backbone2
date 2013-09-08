@@ -1,11 +1,27 @@
+'use strict';
+
+// tell JSHint to assume existence of these global vars
+/*global app, $, _, Backbone, alert, Album, Photo*/
+
 /**
- * The router decides what happens when various URLs in the app are hit.
+ * Backbone.js router.
+ *
+ * Decides what happens when various URLs in the app are hit.
  */
 var Router = Backbone.Router.extend({
+	
+	/**
+	 * Define the application's routes.
+	 *
+	 * This maps a URL 'route' expression to a 
+	 * javascript function to call when Backbone
+	 * detects a matching URL has been entered
+	 * into the browser.location.
+	 */
 	routes: {
-		"v/*path.html": "viewPhoto",
-		"v/*path": "viewAlbum",
-		"*path": "notFound"
+		'v/*path.html': 'viewPhoto',
+		'v/*path': 'viewAlbum',
+		'*path': 'notFound'
 	},
 	
 	initialize: function() {
@@ -13,11 +29,11 @@ var Router = Backbone.Router.extend({
 	},
 	
 	wait: function() {
-		$("#waiting").addClass("on");
+		$('#waiting').addClass('on');
 	},
 	
 	unwait: function() {
-		$("#waiting").removeClass("on");
+		$('#waiting').removeClass('on');
 	},
 	
 	/**
@@ -27,29 +43,31 @@ var Router = Backbone.Router.extend({
 		var _this = this;
 		this.wait();
 		
-		var pathParts = path.split("/");
+		var pathParts = path.split('/');
 		var photoId = pathParts.pop();
-		var albumPath = pathParts.join("/");
+		var albumPath = pathParts.join('/');
 		
-		//console.log("Router.viewPhoto() photo " + photoId + " in album " + albumPath);
+		//console.log('Router.viewPhoto() photo ' + photoId + ' in album ' + albumPath);
 		
 		// fetch the album, either from cache or from server
 		Album.Store.fetchAlbum(albumPath)
 			.fail(function(xhr, options) {
-				console("Router.viewPhoto() couldn't find album " + path + ". Error: ", xhr, options);
+				console('Router.viewPhoto() couldn\'t find album ' + path + '. Error: ', xhr, options);
 			})
 			.done(function(album) {
-				//console.log("Router.viewPhoto() got album " + albumPath + " for photo " + photoId + ".  Album: " , album);
+				//console.log('Router.viewPhoto() got album ' + albumPath + ' for photo ' + photoId + '.  Album: ' , album);
 		
 				var photo = album.getPhotoByPathComponent(photoId);
-				if (!photo) throw "No photo with ID " + photoId;
-				//console.log("Router.viewPhoto() got photo " + photoId, photo);
+				if (!photo) {
+					throw 'No photo with ID ' + photoId;
+				}
+				//console.log('Router.viewPhoto() got photo ' + photoId, photo);
 				
 				// set the photo's album on the photo so the view can use that info
 				photo.album = album.attributes;
 				photo.nextPhoto = album.getNextPhoto(photoId);
 				photo.prevPhoto = album.getPrevPhoto(photoId);
-				photo.orientation = (photo.height > photo.width) ? "portrait" : "landscape";
+				photo.orientation = (photo.height > photo.width) ? 'portrait' : 'landscape';
 				
 				new Photo.Views.PhotoPage({
 					model: photo,
@@ -67,7 +85,7 @@ var Router = Backbone.Router.extend({
 	viewAlbum: function(path) {
 		var _this = this;
 		this.wait();
-		//console.log("Router.viewAlbum(path: [" + path + "])");
+		//console.log('Router.viewAlbum(path: [' + path + '])');
 
 		// regularize path by getting rid of any preceding or trailing slashes
 		path = this.normalizePath(path);
@@ -75,10 +93,10 @@ var Router = Backbone.Router.extend({
 		// fetch album, either from cache or from server
 		Album.Store.fetchAlbum(path)
 			.fail(function(xhr, options) {
-				console.log("Couldn't find album " + path + ". Error: ", xhr, options);
+				console.log('Couldn\'t find album ' + path + '. Error: ', xhr, options);
 			})
 			.done(function(album) {
-				//console.log("URL router viewAlbum() got album " + path + ".  Album: " , album);
+				//console.log('URL router viewAlbum() got album ' + path + '.  Album: ' , album);
 				new Album.Views.Main({
 					model: album,
 					el: $('#main')
@@ -94,20 +112,22 @@ var Router = Backbone.Router.extend({
 	 */
 	notFound: function(path) {
 		// retrieve the root album
-		this.viewAlbum("");
+		this.viewAlbum('');
 	},
 
 	/**
 	 * Helper method to normalize paths
 	 */
 	normalizePath: function(path) {
-		if (!path) return "";
-
+		if (!path) {
+			return '';
+		}
+		
 		// strip any trailing slash
-		path = path.replace(/\/$/, "");
+		path = path.replace(/\/$/, '');
 
 		// Regularize path by getting rid of any preceding or trailing slashes
-		var pathParts = path.split("/");
-		return pathParts.join("/");
+		var pathParts = path.split('/');
+		return pathParts.join('/');
 	}
 });
