@@ -10,10 +10,6 @@ A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.or
 2. [Node.js](http://nodejs.org/) - *Node.js server.  Needed to manage development tools & run dev webserver.  Not used at runtime*
 3. [Compass](http://compass-style.org/) - *SASS CSS processor* 
  * This will require installing Ruby.  I highly recommend using [RVM](https://rvm.io/) instead installing Ruby directly.
-4. [Yeoman 1.0](http://yeoman.io/) - *command-line web development tool suite*
- * This installs the following automatically:
- * [Bower](http://bower.io/) - *javascript package manager*
- * [Grunt](http://gruntjs.com/) - *build and dev task runner*
 
 ### Get project
 
@@ -25,15 +21,17 @@ A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.or
 
 `npm install` - *downloads and installs Node.js packages that project's development system depends on, like Grunt.js*
 
-`bower install` - *downloads and installs bower packages that the project's runtime depends on, like jQuery*
+`./node_modules/.bin/bower install` - *downloads and installs bower packages that the project's runtime depends on, like jQuery*
+ * *you can do `bower install` if you already have Bower installed globally*
 
-`grunt` - *compile the app*
+`./node_modules/.bin/grunt` - *compile the app*
+ * *You can do `grunt install` if you already have Grunt installed globally*
 
 ### Run development server & preview locally
 
 `cd [project root]`
 
-`grunt server` - *starts server and pops up browser with index page.  Autorefreshes browser each time a file changes.*
+`./node_modules/.bin/grunt server` - *starts server and pops up browser with index page.  Autorefreshes browser each time a file changes.*
 
 ### Make changes, do development
 Simply edit the files.  If you ran `grunt server` and the web browser is tuned to the right page, the changes will show up instantly.
@@ -42,7 +40,7 @@ Simply edit the files.  If you ran `grunt server` and the web browser is tuned t
 
 `cd [project root]`
 
-`grunt build` - *compiles production version and sticks in [project root/]dist/*
+`./node_modules/.bin/grunt build` - *compiles production version and sticks in [project root/]dist/*
 
 ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have to change some variables in `app/scripts/main.js`
 
