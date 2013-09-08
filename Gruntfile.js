@@ -186,8 +186,8 @@ module.exports = function (grunt) {
 			compile: {
 				options: {
 					// the namespace to which the precompiled templates will be assigned
-					namespace: 'JST',
-					wrapped: 'true'
+					namespace: 'JST' // access the templates via window.JST['path/to/template']
+					//wrapped: 'true'
 				},
 				files: {
 					// path.to.target.compiled.file : path.to.source.files
@@ -265,7 +265,10 @@ module.exports = function (grunt) {
                     src: [
                         '*.{ico,txt}',
                         '.htaccess',
-                        'images/{,*/}*.{webp,gif}'
+                        'images/{,*/}*.{webp,gif}',
+						'fonts/{,*/}*.{svg,eot,ttf,woff,html,js,css}',
+						'scripts/vendor/wysihtml5*.js',
+						'php/firsts.php'
                     ]
                 }]
             }
@@ -315,7 +318,6 @@ module.exports = function (grunt) {
             'clean:server',
             'coffee:dist',
             'createDefaultTemplate',
-            'handlebars',
             'compass:server',
             'connect:livereload',
             'open',
@@ -327,7 +329,6 @@ module.exports = function (grunt) {
         'clean:server',
         'coffee',
         'createDefaultTemplate',
-        'handlebars',
         'compass',
         'connect:test',
         'mocha'

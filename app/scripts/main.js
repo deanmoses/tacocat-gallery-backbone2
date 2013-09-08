@@ -65,7 +65,12 @@ window.app = {
 	 * @param templateId ID of template
 	 */
 	getTemplate : function(templateId) {
-		if (Handlebars.templates === undefined || Handlebars.templates[templateId] === undefined) {
+		var templateFunc = JST['app/templates/'+templateId+'.handlebars'];
+		if (templateFunc) {
+		    console.log('found the JST templates', templateFunc);
+		    return templateFunc;
+		}
+		else if (Handlebars.templates === undefined || Handlebars.templates[templateId] === undefined) {
 			//console.log('app.getTemplate('+templateId+'): fetching from server');
 			$.ajax({
 				url : 'templates/' + templateId + '.handlebars',
