@@ -24,31 +24,28 @@ A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.or
 `./node_modules/.bin/bower install` - *downloads and installs bower packages that the project's runtime depends on, like jQuery*
  * *you can do `bower install` if you already have Bower installed globally*
 
-`./node_modules/.bin/grunt` - *compile the app*
- * *You can do `grunt install` if you already have Grunt installed globally*
-
 ### Run development server & preview locally
 
 `cd [project root]`
 
-`./node_modules/.bin/grunt server` - *starts server and pops up browser with index page.  Autorefreshes browser each time a file changes.*
+`grunt server` - *starts server and pops up browser with index page.  Autorefreshes browser each time a file changes.*
 
 ### Make changes, do development
 Simply edit the files.  If you ran `grunt server` and the web browser is tuned to the right page, the changes will show up instantly.
 
-### Build project for production and deploy to tacocat.com [WORK IN PROGRESS - HANDLEBAR TEMPLATES AND FIRSTS.PHP ARENT THERE YET]
+### Build project for production and deploy to tacocat.com
 
 `cd [project root]`
 
-`./node_modules/.bin/grunt build` - *compiles production version and sticks in [project root/]dist/*
+`grunt build` - *compiles production version and sticks in [project root/]dist/*
 
-ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have to change some variables in `app/scripts/main.js`
+ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have to change a variable in `app/scripts/firsts.js`
 
 ### Project Structure
 
-   * /package.json:  the node.js dependency file
+   * **/package.json**:  the node.js dependency file
       * this is what specifies all the server tools, like Grunt
       * the actual packages are installed in /node_modules/
-   * /bower.json:  the bower dependency file
+   * **/bower.json**:  the bower dependency file
       * this is what specifies all the app dependencies, like backbone and lodash
       * the actual packages are installed in /app/bower_components/
