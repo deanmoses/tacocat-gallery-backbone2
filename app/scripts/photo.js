@@ -87,7 +87,7 @@ Photo.Views.PhotoPage = Backbone.View.extend({
 				// stylesheets to display inside the editor iframe
 				stylesheets: [
 					'http://yui.yahooapis.com/2.9.0/build/reset/reset-min.css',
-					'app/styles/css/editor/editor.css'
+					'styles/editor/editor.css'
 				],
 				
 				// name of javascript variable defined in parser rules .js

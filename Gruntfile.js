@@ -51,12 +51,6 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass']
             },
-			handlebars: {
-				files: [
-					'app/templates/**/*.handlebars'
-				],
-				tasks: 'handlebars reload'
-			},
 			livereload: {
 				options: {
 					livereload: LIVERELOAD_PORT
@@ -224,13 +218,22 @@ module.exports = function (grunt) {
                 }]
             }
         },
+
+		// minify the CSS files, combine into a single file
+		// must be run *after* compass has compiled the .sass into .css
         cssmin: {
             dist: {
                 files: {
                     '<%= yeoman.dist %>/styles/main.css': [
                         '.tmp/styles/{,*/}*.css',
                         '<%= yeoman.app %>/styles/{,*/}*.css'
-                    ]
+                    ],
+					
+					// keep the admin-only editor CSS out of the end user CSS
+					'<%= yeoman.dist %>/styles/editor/stylesheet.css': ['.tmp/styles/editor/stylesheet.css'],
+					
+					// styles for inside the iframe of the wysihtml5 rich text editor
+					'<%= yeoman.dist %>/styles/editor/editor.css': ['.tmp/styles/editor/editor.css']
                 }
             }
         },
@@ -288,7 +291,9 @@ module.exports = function (grunt) {
 						// ignore the wysihtml5*.js files, which are admin-only
 						// and loaded dynamically in javascript
                         '<%= yeoman.dist %>/scripts/{,*/}!(wysihtml5)*.js',
-                        '<%= yeoman.dist %>/styles/{,*/}*.css',
+						// ignore the CSS files in styles/editor/, which are admin-only
+						// and loaded dynamically in javascript
+                        '<%= yeoman.dist %>/styles/{,*/}!(stylesheet|editor)*.css',
                         '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
                         '<%= yeoman.dist %>/styles/fonts/*'
                     ]

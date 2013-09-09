@@ -74,26 +74,33 @@ window.app = {
 		if (JST && JST[jstTemplateName]) {
 			return JST[jstTemplateName];
 		}
-		// Else look for cached version of development template
-		else if (Handlebars.templates && Handlebars.templates[templateId]) {
-			return Handlebars.templates[templateId];
+		
+		//
+		// Else retrieve the development version of the template
+		//
+		
+		// If the place where we cache dev templates is undefined, define it
+		if (Handlebars.templates === undefined) {
+			Handlebars.templates = {};
 		}
-		// Else download the development version of the template (the
-		// raw Handlebars file), compile it, and cache it.
-		else {
+		
+		// If there's no cached version of development template,
+		// download the template (the raw Handlebars file), 
+		// compile it, and cache it.
+		if (Handlebars.templates[templateId] == undefined) {
 			//console.log('app.getTemplate('+templateId+'): fetching from server');
 			$.ajax({
 				url : 'templates/' + templateId + '.handlebars',
 				async : false
 			}).done(function(data) {
-				if (Handlebars.templates === undefined) {
-					Handlebars.templates = {};
-				}
 				Handlebars.templates[templateId] = Handlebars.compile(data);
 			}).fail(function(data, textStatus, jqXHR) {
 				throw 'Failed to retrieve template [' + templateId + ']: ' + jqXHR;
 			});
 		}
+		
+		// return cached version of development template
+		return Handlebars.templates[templateId];
 	},
 
 	/**
