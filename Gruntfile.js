@@ -278,11 +278,16 @@ module.exports = function (grunt) {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
         },
+		// Use 'rev' task together with yeoman/grunt-usemin for cache busting of static files.
+		// Allows the files to be cached forever by the browser.
+		// Will rename files to stuff like becff3a.main.js
         rev: {
             dist: {
                 files: {
                     src: [
-                        '<%= yeoman.dist %>/scripts/{,*/}*.js',
+						// ignore the wysihtml5*.js files, which are admin-only
+						// and loaded dynamically in javascript
+                        '<%= yeoman.dist %>/scripts/{,*/}!(wysihtml5)*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
                         '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
                         '<%= yeoman.dist %>/styles/fonts/*'
@@ -334,6 +339,7 @@ module.exports = function (grunt) {
         'mocha'
     ]);
 
+	// build production version of app
     grunt.registerTask('build', [
         'clean:dist',
         'coffee',

@@ -48,29 +48,39 @@ window.app = {
 	 *
 	 * @param templateId ID of template
 	 * @param context - the model attributes, or whatever data you pass to a template
+	 * @return results of executed template, typically HTML
 	 */
 	renderTemplate : function(templateId, context) {
-		//console.log('app.renderTemplate(['+templateId+'])');
 		var template = this.getTemplate(templateId);
-		//var template = Handlebars.getTemplate(templateId);
 		if (!template) {
 			throw 'Error retrieving template [' + templateId + ']';
 		}
+		
+		// execute the template and return the resulting HTML
 		return template(context);
 	},
 
 	/**
-	 * Return the compiled template
+	 * Return the template
 	 *
 	 * @param templateId ID of template
 	 */
 	getTemplate : function(templateId) {
-		var templateFunc = JST['app/templates/'+templateId+'.handlebars'];
-		if (templateFunc) {
-		    console.log('found the JST templates', templateFunc);
-		    return templateFunc;
+		// Look for version of template that's been compiled to JST,
+		// the JavaScript Template system. These will only exist in
+		// production mode, where the Grunt.js build process has 
+		// compiled the Handlebars templates into JST templates.
+		var jstTemplateName = 'app/templates/'+templateId+'.handlebars';
+		if (JST && JST[jstTemplateName]) {
+			return JST[jstTemplateName];
 		}
-		else if (Handlebars.templates === undefined || Handlebars.templates[templateId] === undefined) {
+		// Else look for cached version of development template
+		else if (Handlebars.templates && Handlebars.templates[templateId]) {
+			return Handlebars.templates[templateId];
+		}
+		// Else download the development version of the template (the
+		// raw Handlebars file), compile it, and cache it.
+		else {
 			//console.log('app.getTemplate('+templateId+'): fetching from server');
 			$.ajax({
 				url : 'templates/' + templateId + '.handlebars',
@@ -84,7 +94,6 @@ window.app = {
 				throw 'Failed to retrieve template [' + templateId + ']: ' + jqXHR;
 			});
 		}
-		return Handlebars.templates[templateId];
 	},
 
 	/**
