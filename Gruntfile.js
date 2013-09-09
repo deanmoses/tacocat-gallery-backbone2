@@ -229,9 +229,6 @@ module.exports = function (grunt) {
                         '<%= yeoman.app %>/styles/{,*/}*.css'
                     ],
 					
-					// keep the admin-only editor CSS out of the end user CSS
-					'<%= yeoman.dist %>/styles/editor/stylesheet.css': ['.tmp/styles/editor/stylesheet.css'],
-					
 					// styles for inside the iframe of the wysihtml5 rich text editor
 					'<%= yeoman.dist %>/styles/editor/editor.css': ['.tmp/styles/editor/editor.css']
                 }
