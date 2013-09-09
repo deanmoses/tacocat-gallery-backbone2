@@ -24,12 +24,26 @@ Photo.Views.PhotoPage = Backbone.View.extend({
     
 	render: function() {
        
+		// If the caption contains any <a hrefs> that link to a gallery
+		// URL, rewrite them to point to this UI instead.
+		/*
+		var caption = '<span>' + this.model.description + '</span>';
+		var jqObj = $($.parseHTML(caption));
+		jqObj.find('a').attr('href', function() {
+			if (this.href && this.href.lastIndexOf(window.location.origin, 0) === 0) {
+				return this.href.replace(/pictures\//, '#');
+			}
+		});
+		this.model.description = jqObj.html();
+		*/
+		this.model.description = app.rewriteGalleryUrls(this.model.description);
+		
 		// Blank out the display area
 		this.$el.empty();
 
 		// Generate the header HTML
 		var headerHtml = app.renderTemplate('photo_header', this.model);
-
+		
 		// Generate the body HTML
 		var bodyHtml = app.renderTemplate('photo_body', this.model);
 
