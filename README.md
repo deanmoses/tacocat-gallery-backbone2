@@ -39,7 +39,7 @@ Simply edit the files.  If you ran `grunt server` and the web browser is tuned t
 
 `grunt build` - *compiles production version and sticks in [project root/]dist/*
 
-ftp the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - if you want it someplace else, you'll have change a few things.  Here's an incomplete list: 
+copy the distribution files at `[project root]dist/*` to `tacocat.com/p/`  - Use rsync or FTP.  Should set it up as a git subtree deployment some day.  If you want it someplace else, you'll have change a few things.  Here's an incomplete list: 
 * change a variable in `app/scripts/firsts.js`
 * the URL rewriting code in `apps/scripts/main.js`
 
