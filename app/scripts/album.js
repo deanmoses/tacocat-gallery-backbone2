@@ -24,11 +24,29 @@ var Album = {
 Album.Model = Backbone.Model.extend({
 	idAttribute: 'fullPath',
 
+	/**
+	 * Return the URL location of the album's JSON
+	 */
 	url: function() {
-		//console.log('Album.Model.url() called');
 		// if not mock, return real URL
 		if (!app.mock) {
-			return 'http://tacocat.com/pictures/main.php?g2_view=json.Album&album=' + this.id;
+			// Album IDs are of this format:
+			//   2013
+			//   2013/09-08
+			//   2013/09-08/someSubAlbum
+			var year = this.id.split('/')[0];
+			
+			// if the year is 2006 or greater, the album's in Gallery2
+			if (year >= 2006) {
+				return 'http://tacocat.com/pictures/main.php?g2_view=json.Album&album=' + this.id;
+			}
+			// 2005 and earlier years are in static JSON
+			// at /oldpix/year/month/day/album.json
+			// such as /oldpix/2001/12/31/album.json
+			else {
+				var path = this.id.replace('-', '/');
+				return 'http://tacocat.com/oldpix/' + path + '/album.json'
+			}
 		}
 		// else if it's a sub album with photos
 		else if (this.id.indexOf('/') >= 0) {
@@ -176,6 +194,57 @@ Album.Collection = Backbone.Collection.extend({
 					
 					// Add a 'fulltitle' attribute accessbile to templating
 					album.attributes.fulltitle = album.getTitle();
+					
+					// If the album's caption has any links to the the old
+					// picture gallery, rewrite them to point to this UI
+					album.attributes.description = app.rewriteGalleryUrls(album.attributes.description);
+					
+					
+					// If album doesn't have URL, it's a pre 2006 album.
+					// Give it URL of same structure as post 2006 albums.
+					if (!album.attributes.url) {
+						//v/2013/07-07/
+						album.attributes.url = 'v/' + album.attributes.pathComponent;
+					}
+					
+					// Do some munging on the album's photos
+					if (album.attributes.albumType == 'week') {
+						album.attributes.children.forEach(function(entry) {
+						    
+							// If the caption contains any <a hrefs> that link to a gallery
+							// URL, rewrite them to point to this UI instead.
+							entry.description = app.rewriteGalleryUrls(entry.description);
+							
+							// If I don't have URL to full sized image, I'm a post 2006 album.
+							// Generate now
+							if (!entry.fullSizeImage) {
+								entry.fullSizeImage = {
+									// http://tacocat.com/pictures/d/{{id}}-3/{{pathComponent}}
+									url: 'http://tacocat.com/pictures/d/' + entry.id + '-3/' + entry.pathComponent
+								}
+							}
+							
+							// If I don't have a URL to my photo page, I'm a pre 2006 album.
+							// Set up URL here of same format as post 2006 albums: v/2009/11-08/supper.jpg.html
+							if (!entry.url) {
+								entry.url = 'v/' + album.attributes.pathComponent + '/' + entry.pathComponent + '.html';
+							}
+						
+							// If I don't have a thumbnail URL, I'm a pre 2006 album.
+							// Generate a thumb using my full-sized image using an 
+							// image proxy service (this is temporary, need a more
+							// performant solution like hooking up to a CDN)
+							if (!entry.thumbnail) {								
+								var url = 'http://images.weserv.nl/?w=100&h=100&t=square&url=';
+								url = url + entry.fullSizeImage.url.replace('http://', '');
+								entry.thumbnail = {
+									url: url,
+									height: 100,
+									width: 100
+								}
+							}
+						});
+					}
 
 					// cache the album
 					that.push(album);

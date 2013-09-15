@@ -110,7 +110,7 @@ window.app = {
 	 * @param caption The HTML of the caption
 	 * @return the caption HTML with any hrefs to the gallery rewritten
 	 */
-	rewriteGalleryUrls: function(caption) {
+	rewriteGalleryUrls: function(caption) {		
 		// Create a new jQuery object from the passed-in HTML.
 		// Gotta wrap it in a tag (like <span> here) or else
 		// the selector (.find('a')) doesn't work.  When I call
@@ -122,7 +122,7 @@ window.app = {
 			// if the tag has a href and the href is pointing to this server...
 			if (this.href && this.href.lastIndexOf(window.location.origin, 0) === 0) {
 				// rewrite the 'pictures/' to '#'
-				return this.href.replace(/pictures\//, 'p\/#');
+				return this.href.replace(/pictures\//, '#');
 			}
 		});
 		
