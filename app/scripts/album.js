@@ -172,6 +172,13 @@ Album.Collection = Backbone.Collection.extend({
 					if (path.indexOf('/') >= 0) {
 						var pathParts = path.split('/');
 						pathParts.pop();
+						
+						// If album doesn't have an ID, it's a pre 2006 album
+						// and the path contains a month like this:  2001/12/31
+						// Pop off the month to get the correct year path.
+						if (!album.attributes.id) {
+							pathParts.pop();
+						}
 						album.attributes.parentAlbumPath = pathParts.join('/');
 						album.attributes.albumType = 'week';
 					}
@@ -182,6 +189,35 @@ Album.Collection = Backbone.Collection.extend({
 						
 						// Make this year's firsts available
 						album.attributes.firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
+						
+						// If year album doesn't have an ID, it's a pre 2006 album
+						// and we need to generate thumbnail info for each week
+						// from full sized image
+						if (!album.attributes.id) {						
+							album.attributes.children.forEach(function(entry) {
+								// If I don't have a thumbnail URL, I'm a pre 2006 album.
+								// Generate a thumb using my full-sized image using an 
+								// image proxy service (this is temporary, need a more
+								// performant solution like hooking up to a CDN)
+								if (!entry.thumbnail) {								
+									var url = 'http://images.weserv.nl/?w=100&h=100&t=square&url=';
+									url = url + entry.fullSizeImage.url.replace('http://', '');
+									entry.thumbnail = {
+										url: url,
+										height: 100,
+										width: 100
+									}
+								}
+								
+								// If album doesn't have URL, it's a pre 2006 album.
+								// Give it URL of same structure as post 2006 albums.
+								if (!entry.url) {
+									//v/2013/07-07/
+									entry.url = 'v/' + entry.pathComponent;
+								}
+							});
+						}
+						
 					}
 					// else this is the root album
 					else {
@@ -213,6 +249,7 @@ Album.Collection = Backbone.Collection.extend({
 						    
 							// If the caption contains any <a hrefs> that link to a gallery
 							// URL, rewrite them to point to this UI instead.
+							
 							entry.description = app.rewriteGalleryUrls(entry.description);
 							
 							// If I don't have URL to full sized image, I'm a post 2006 album.

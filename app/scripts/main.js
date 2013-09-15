@@ -110,7 +110,9 @@ window.app = {
 	 * @param caption The HTML of the caption
 	 * @return the caption HTML with any hrefs to the gallery rewritten
 	 */
-	rewriteGalleryUrls: function(caption) {		
+	rewriteGalleryUrls: function(caption) {
+		if (!caption) return caption;
+			
 		// Create a new jQuery object from the passed-in HTML.
 		// Gotta wrap it in a tag (like <span> here) or else
 		// the selector (.find('a')) doesn't work.  When I call
