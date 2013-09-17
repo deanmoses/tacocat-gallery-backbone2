@@ -36,8 +36,8 @@ Album.Model = Backbone.Model.extend({
 			//   2013/09-08/someSubAlbum
 			var year = this.id.split('/')[0];
 			
-			// if the year is 2007 or greater, the album's in Gallery2
-			if (year >= 2007) {
+			// if the year is blank (the root album) or 2007 or greater, the album's in Gallery2
+			if (!year || year >= 2007) {
 				return 'http://tacocat.com/pictures/main.php?g2_view=json.Album&album=' + this.id;
 			}
 			// 2006 and earlier years are in static JSON
