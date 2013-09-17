@@ -36,11 +36,11 @@ Album.Model = Backbone.Model.extend({
 			//   2013/09-08/someSubAlbum
 			var year = this.id.split('/')[0];
 			
-			// if the year is 2006 or greater, the album's in Gallery2
-			if (year >= 2006) {
+			// if the year is 2007 or greater, the album's in Gallery2
+			if (year >= 2007) {
 				return 'http://tacocat.com/pictures/main.php?g2_view=json.Album&album=' + this.id;
 			}
-			// 2005 and earlier years are in static JSON
+			// 2006 and earlier years are in static JSON
 			// at /oldpix/year/month/day/album.json
 			// such as /oldpix/2001/12/31/album.json
 			else {
@@ -173,7 +173,7 @@ Album.Collection = Backbone.Collection.extend({
 						var pathParts = path.split('/');
 						pathParts.pop();
 						
-						// If album doesn't have an ID, it's a pre 2006 album
+						// If album doesn't have an ID, it's a pre 2007 album
 						// and the path contains a month like this:  2001/12/31
 						// Pop off the month to get the correct year path.
 						if (!album.attributes.id) {
@@ -190,12 +190,12 @@ Album.Collection = Backbone.Collection.extend({
 						// Make this year's firsts available
 						album.attributes.firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
 						
-						// If year album doesn't have an ID, it's a pre 2006 album
+						// If year album doesn't have an ID, it's a pre 2007 album
 						// and we need to generate thumbnail info for each week
 						// from full sized image
 						if (!album.attributes.id) {						
 							album.attributes.children.forEach(function(entry) {
-								// If I don't have a thumbnail URL, I'm a pre 2006 album.
+								// If I don't have a thumbnail URL, I'm a pre 2007 album.
 								// Generate a thumb using my full-sized image using an 
 								// image proxy service (this is temporary, need a more
 								// performant solution like hooking up to a CDN)
@@ -209,7 +209,7 @@ Album.Collection = Backbone.Collection.extend({
 									}
 								}
 								
-								// If album doesn't have URL, it's a pre 2006 album.
+								// If album doesn't have URL, it's a pre 2007 album.
 								// Give it URL of same structure as post 2006 albums.
 								if (!entry.url) {
 									//v/2013/07-07/
@@ -236,7 +236,7 @@ Album.Collection = Backbone.Collection.extend({
 					album.attributes.description = app.rewriteGalleryUrls(album.attributes.description);
 					
 					
-					// If album doesn't have URL, it's a pre 2006 album.
+					// If album doesn't have URL, it's a pre 2007 album.
 					// Give it URL of same structure as post 2006 albums.
 					if (!album.attributes.url) {
 						//v/2013/07-07/
@@ -261,13 +261,13 @@ Album.Collection = Backbone.Collection.extend({
 								}
 							}
 							
-							// If I don't have a URL to my photo page, I'm a pre 2006 album.
+							// If I don't have a URL to my photo page, I'm a pre 2007 album.
 							// Set up URL here of same format as post 2006 albums: v/2009/11-08/supper.jpg.html
 							if (!entry.url) {
 								entry.url = 'v/' + album.attributes.pathComponent + '/' + entry.pathComponent + '.html';
 							}
 						
-							// If I don't have a thumbnail URL, I'm a pre 2006 album.
+							// If I don't have a thumbnail URL, I'm a pre 2007 album.
 							// Generate a thumb using my full-sized image using an 
 							// image proxy service (this is temporary, need a more
 							// performant solution like hooking up to a CDN)
@@ -462,7 +462,7 @@ Album.Views.root.getBodyHtml = function(album) {
 
 	// Generate the thumbnail HTMl for the early years as fake child albums 
 	var earlyYears = [{
-		url: '/pix/2006/index.php',
+		url: '/v/2006',
 		title: '2006',
 		thumbnail: {
 			url: '2006-reading.jpg',
@@ -470,7 +470,7 @@ Album.Views.root.getBodyHtml = function(album) {
 			width: 150
 		}
 	}, {
-		url: '/pix/2005/index.php',
+		url: '/v/2005',
 		title: '2005',
 		thumbnail: {
 			url: '2005-bath.jpg',
@@ -478,7 +478,7 @@ Album.Views.root.getBodyHtml = function(album) {
 			width: 150
 		}
 	}, {
-		url: '/pix/2004/index.php',
+		url: '/v/2004',
 		title: '2004',
 		thumbnail: {
 			url: '2004_fall_milo.jpg',
@@ -486,7 +486,7 @@ Album.Views.root.getBodyHtml = function(album) {
 			width: 75
 		}
 	}, {
-		url: '/pix/2003/index.php',
+		url: '/v/2003',
 		title: '2003',
 		thumbnail: {
 			url: '21months_small.jpg',
@@ -494,7 +494,7 @@ Album.Views.root.getBodyHtml = function(album) {
 			width: 75
 		}
 	}, {
-		url: '/pix/2002/index.php',
+		url: '/v/2002',
 		title: '2002',
 		thumbnail: {
 			url: '1year_small.jpg',
@@ -502,7 +502,7 @@ Album.Views.root.getBodyHtml = function(album) {
 			width: 75
 		}
 	}, {
-		url: '/pix/2001/index.php',
+		url: '/v/2001',
 		title: '2001',
 		thumbnail: {
 			url: 'felix_small.jpg',
