@@ -45,7 +45,7 @@ Album.Model = Backbone.Model.extend({
 			// such as /oldpix/2001/12/31/album.json
 			else {
 				var path = this.id.replace('-', '/');
-				return 'http://tacocat.com/oldpix/' + path + '/album.json'
+				return 'http://tacocat.com/oldpix/' + path + '/album.json';
 			}
 		}
 		// else if it's a sub album with photos
@@ -189,24 +189,24 @@ Album.Collection = Backbone.Collection.extend({
 						
 						// Make this year's firsts available
 						album.attributes.firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
-						
+
 						// If year album doesn't have an ID, it's a pre 2007 album
 						// and we need to generate thumbnail info for each week
 						// from full sized image
-						if (!album.attributes.id) {						
+						if (!album.attributes.id) {
 							album.attributes.children.forEach(function(entry) {
 								// If I don't have a thumbnail URL, I'm a pre 2007 album.
 								// Generate a thumb using my full-sized image using an 
 								// image proxy service (this is temporary, need a more
 								// performant solution like hooking up to a CDN)
-								if (!entry.thumbnail) {								
+								if (!entry.thumbnail) {
 									var url = 'http://images.weserv.nl/?w=100&h=100&t=square&url=';
 									url = url + entry.fullSizeImage.url.replace('http://', '');
 									entry.thumbnail = {
 										url: url,
 										height: 100,
 										width: 100
-									}
+									};
 								}
 								
 								// If album doesn't have URL, it's a pre 2007 album.
@@ -244,7 +244,7 @@ Album.Collection = Backbone.Collection.extend({
 					}
 					
 					// Do some munging on the album's photos
-					if (album.attributes.albumType == 'week') {
+					if (album.attributes.albumType === 'week') {
 						album.attributes.children.forEach(function(entry) {
 						    
 							// If the caption contains any <a hrefs> that link to a gallery
@@ -258,7 +258,7 @@ Album.Collection = Backbone.Collection.extend({
 								entry.fullSizeImage = {
 									// http://tacocat.com/pictures/d/{{id}}-3/{{pathComponent}}
 									url: 'http://tacocat.com/pictures/d/' + entry.id + '-3/' + entry.pathComponent
-								}
+								};
 							}
 							
 							// If I don't have a URL to my photo page, I'm a pre 2007 album.
@@ -271,14 +271,14 @@ Album.Collection = Backbone.Collection.extend({
 							// Generate a thumb using my full-sized image using an 
 							// image proxy service (this is temporary, need a more
 							// performant solution like hooking up to a CDN)
-							if (!entry.thumbnail) {								
+							if (!entry.thumbnail) {
 								var url = 'http://images.weserv.nl/?w=100&h=100&t=square&url=';
 								url = url + entry.fullSizeImage.url.replace('http://', '');
 								entry.thumbnail = {
 									url: url,
 									height: 100,
 									width: 100
-								}
+								};
 							}
 						});
 					}

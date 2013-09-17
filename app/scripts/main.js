@@ -7,7 +7,7 @@
  */
 
 // tell JSHint to assume existence of these global vars
-/*global app, $, _, Backbone, Handlebars, alert, Router, Firsts, Authentication, Album, Photo*/
+/*global app, $, _, Backbone, Handlebars, alert, JST, Router, Firsts, Authentication, Album, Photo*/
 
 // define the global variable 'app'
 window.app = {
@@ -87,7 +87,7 @@ window.app = {
 		// If there's no cached version of development template,
 		// download the template (the raw Handlebars file), 
 		// compile it, and cache it.
-		if (Handlebars.templates[templateId] == undefined) {
+		if (Handlebars.templates[templateId] === undefined) {
 			//console.log('app.getTemplate('+templateId+'): fetching from server');
 			$.ajax({
 				url : 'templates/' + templateId + '.handlebars',
@@ -111,8 +111,10 @@ window.app = {
 	 * @return the caption HTML with any hrefs to the gallery rewritten
 	 */
 	rewriteGalleryUrls: function(caption) {
-		if (!caption) return caption;
-			
+		if (!caption) {
+			return caption;
+		}
+		
 		// Create a new jQuery object from the passed-in HTML.
 		// Gotta wrap it in a tag (like <span> here) or else
 		// the selector (.find('a')) doesn't work.  When I call
