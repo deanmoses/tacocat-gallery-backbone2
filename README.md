@@ -1,7 +1,11 @@
 tacocat-gallery-backbone2
 =========================
 
-A HTML5 front end for tacocat.com's [Menalto gallery 2](http://galleryproject.org/) photo site using [Backbone.js](http://backbonejs.org/).   Made for phones, tablets and desktop browsers.
+A HTML5 front end for tacocat.com's photo site using [Backbone.js](http://backbonejs.org/). 
+Displays both the dynamic albums served from [Menalto gallery 2](http://galleryproject.org/) 
+as well as the static pre-2006 albums that have been parsed to static JSON. 
+
+Made for phones, tablets and desktop browsers.
 
 ## How To Work With Project
 
