@@ -204,6 +204,68 @@ Album.Collection = Backbone.Collection.extend({
 						
 						// blank out any title on the root album, we don't want to display it
 						album.attributes.title = undefined;
+						
+						// the root album comes from Gallery2.  Insert all the old 
+						// static years
+						var earlyYearThumbs = [{
+							url: 'v/2006',
+							title: '2006',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/2006-reading.jpg',
+								height: 75,
+								width: 150
+							}
+						}, {
+							url: 'v/2005',
+							title: '2005',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/2005-bath.jpg',
+								height: 75,
+								width: 150
+							}
+						}, {
+							url: 'v/2004',
+							title: '2004',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/2004_fall_milo.jpg',
+								height: 75,
+								width: 75
+							}
+						}, {
+							url: 'v/2003',
+							title: '2003',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/21months_small.jpg',
+								height: 75,
+								width: 75
+							}
+						}, {
+							url: 'v/2002',
+							title: '2002',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/1year_small.jpg',
+								height: 75,
+								width: 75
+							}
+						}, {
+							url: 'v/2001',
+							title: '2001',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/felix_small.jpg',
+								height: 75,
+								width: 75
+							}
+						}, {
+							url: 'v/2001',
+							title: '1973',
+							thumbnail: {
+								url: 'http://tacocat.com/pix/img/1973-dean-2weeks-thumb.jpg',
+								height: 75,
+								width: 75
+							}
+						}];
+						
+						album.attributes.children = album.attributes.children.concat(earlyYearThumbs);
 					}
 					
 					// process week album
@@ -484,70 +546,6 @@ Album.Views.root.getBodyHtml = function(album) {
 	_.each(album.get('children'), function(child) {
 		//console.log('Album.Views.Root.render() thumbnail child: ' + child.title);
 		thumbnailHtml += app.renderTemplate('thumbnail', child);
-	});
-
-	// Generate the thumbnail HTMl for the early years as fake child albums 
-	var earlyYears = [{
-		url: '/v/2006',
-		title: '2006',
-		thumbnail: {
-			url: '2006-reading.jpg',
-			height: 75,
-			width: 150
-		}
-	}, {
-		url: '/v/2005',
-		title: '2005',
-		thumbnail: {
-			url: '2005-bath.jpg',
-			height: 75,
-			width: 150
-		}
-	}, {
-		url: '/v/2004',
-		title: '2004',
-		thumbnail: {
-			url: '2004_fall_milo.jpg',
-			height: 75,
-			width: 75
-		}
-	}, {
-		url: '/v/2003',
-		title: '2003',
-		thumbnail: {
-			url: '21months_small.jpg',
-			height: 75,
-			width: 75
-		}
-	}, {
-		url: '/v/2002',
-		title: '2002',
-		thumbnail: {
-			url: '1year_small.jpg',
-			height: 75,
-			width: 75
-		}
-	}, {
-		url: '/v/2001',
-		title: '2001',
-		thumbnail: {
-			url: 'felix_small.jpg',
-			height: 75,
-			width: 75
-		}
-	}, {
-		url: '/pix/1973/dean/index.php',
-		title: '1973',
-		thumbnail: {
-			url: '1973-dean-2weeks-thumb.jpg',
-			height: 75,
-			width: 75
-		}
-	}];
-
-	_.each(earlyYears, function(child) {
-		//console.log('Album.Views.Root.render() thumbnail early year: ' + child.title);
-		thumbnailHtml += app.renderTemplate('thumbnail_earlyyears', child);
 	});
 
 	// Generate the body HTML
