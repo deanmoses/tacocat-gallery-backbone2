@@ -41,11 +41,10 @@ Album.Model = Backbone.Model.extend({
 				return 'http://tacocat.com/pictures/main.php?g2_view=json.Album&album=' + this.id;
 			}
 			// 2006 and earlier years are in static JSON
-			// at /oldpix/year/month/day/album.json
-			// such as /oldpix/2001/12/31/album.json
+			// at /oldpix/year/month-day/album.json
+			// such as /oldpix/2001/12-31/album.json
 			else {
-				var path = this.id.replace('-', '/');
-				return 'http://tacocat.com/oldpix/' + path + '/album.json';
+				return 'http://tacocat.com/oldpix/' + this.id + '/album.json';
 			}
 		}
 		// else if it's a sub album with photos
@@ -167,36 +166,81 @@ Album.Collection = Backbone.Collection.extend({
 			album.fetch({
 				success: function(model, response, options) {
 					//console.log('Success fetching album ' + path);
-					// Figure out path to parent album
-					// if there's a slash, then it's a sub album
-					if (path.indexOf('/') >= 0) {
+					
+					//	
+					// Figure out what type of album it is:  root, year or week
+					//
+					var albumType;
+					// no path: it's the root album
+					if (!path || path.length <= 0) {
+						albumType = 'root';
+					}
+					// no slashes:  it's a year album
+					else if (path.indexOf('/') < 0) {
+						albumType = 'year';
+					}
+					// else it's a subalbum (2005/12-31 or 2005/12-31/snuggery)
+					else {
+						albumType = 'week';
+					}
+					
+					//
+					// If album doesn't have an ID, it's 2006 or older,
+					// and those come from static JSON.  They have a
+					// different format and we'll be processing them
+					// differently in places.
+					//
+					var isStaticAlbum = (!album.attributes.id);
+					
+					//
+					// Process album, inserting or deleting info needed
+					// to display it.
+					//
+					
+					// process root album
+					if (albumType === 'root') {
+						album.attributes.albumType = 'root';
+						album.attributes.parentAlbumPath = null;
+						
+						// blank out any title on the root album, we don't want to display it
+						album.attributes.title = undefined;
+					}
+					
+					// process week album
+					else if (albumType === 'week') {
+						album.attributes.albumType = 'week';
+						
 						var pathParts = path.split('/');
 						pathParts.pop();
-						
-						// If album doesn't have an ID, it's a pre 2007 album
-						// and the path contains a month like this:  2001/12/31
-						// Pop off the month to get the correct year path.
-						if (!album.attributes.id) {
-							pathParts.pop();
-						}
 						album.attributes.parentAlbumPath = pathParts.join('/');
-						album.attributes.albumType = 'week';
 					}
-					// else if the album path is not '', it's a year album
-					else if (path.length > 0) {
-						album.attributes.parentAlbumPath = '';
+					
+					// process year album
+					else if (albumType === 'year') {
 						album.attributes.albumType = 'year';
+						album.attributes.parentAlbumPath = '';
 						
 						// Make this year's firsts available
-						album.attributes.firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
+						// These will already be set on pre 2007 albums
+						if (!album.attributes.firsts) {
+							album.attributes.firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
+						}
 
-						// If year album doesn't have an ID, it's a pre 2007 album
-						// and we need to generate thumbnail info for each week
-						// from full sized image
-						if (!album.attributes.id) {
-							album.attributes.children.forEach(function(entry) {
-								// If I don't have a thumbnail URL, I'm a pre 2007 album.
-								// Generate a thumb using my full-sized image using an 
+						// Process year albums that are pre 2007
+						if (isStaticAlbum) {
+							
+							// Process info about my sub albums, which are week albums
+							_.each(album.attributes.children, function(entry, key) {
+								
+								// Generate url to album.
+								// Give url same structure as post 2006 albums
+								if (!entry.url) {
+									// like v/2013/12-31/
+									entry.url = 'v/' + entry.pathComponent;
+								}
+
+								// Generate thumbnail image info.
+								// Thumb will use full-sized image sent through an 
 								// image proxy service (this is temporary, need a more
 								// performant solution like hooking up to a CDN)
 								if (!entry.thumbnail) {
@@ -208,24 +252,8 @@ Album.Collection = Backbone.Collection.extend({
 										width: 100
 									};
 								}
-								
-								// If album doesn't have URL, it's a pre 2007 album.
-								// Give it URL of same structure as post 2006 albums.
-								if (!entry.url) {
-									//v/2013/07-07/
-									entry.url = 'v/' + entry.pathComponent;
-								}
 							});
 						}
-						
-					}
-					// else this is the root album
-					else {
-						album.attributes.parentAlbumPath = null;
-						album.attributes.albumType = 'root';
-						
-						// blank out any title on the root album, we don't want to display it
-						album.attributes.title = undefined;
 					}
 					
 					// Add a 'fulltitle' attribute accessbile to templating
@@ -235,21 +263,19 @@ Album.Collection = Backbone.Collection.extend({
 					// picture gallery, rewrite them to point to this UI
 					album.attributes.description = app.rewriteGalleryUrls(album.attributes.description);
 					
-					
 					// If album doesn't have URL, it's a pre 2007 album.
 					// Give it URL of same structure as post 2006 albums.
 					if (!album.attributes.url) {
-						//v/2013/07-07/
+						// like v/2013 or v/2013/12-31/
 						album.attributes.url = 'v/' + album.attributes.pathComponent;
 					}
 					
 					// Do some munging on the album's photos
 					if (album.attributes.albumType === 'week') {
-						album.attributes.children.forEach(function(entry) {
-						    
+						_.each(album.attributes.children, function(entry, key) {
+													    
 							// If the caption contains any <a hrefs> that link to a gallery
 							// URL, rewrite them to point to this UI instead.
-							
 							entry.description = app.rewriteGalleryUrls(entry.description);
 							
 							// If I don't have URL to full sized image, I'm a post 2006 album.

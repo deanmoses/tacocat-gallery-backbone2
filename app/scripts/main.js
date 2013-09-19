@@ -125,8 +125,27 @@ window.app = {
 		jqObj.find('a').attr('href', function() {
 			// if the tag has a href and the href is pointing to this server...
 			if (this.href && this.href.lastIndexOf(window.location.origin, 0) === 0) {
-				// rewrite the 'pictures/' to '#'
-				return this.href.replace(/pictures\//, '#');
+				// if it's to 'pictures/...'
+				if (this.href.indexOf('pictures/') >= 0) {
+					// rewrite the 'pictures/' to '#'
+					return this.href.replace(/pictures\//, 'p/#');
+				}
+				// rewrite 
+				// pix/2005/ to #v/2005
+				// pix/2005/12/31/ to #v/2005/12-31
+				// pix/2005/12/31/snuggery/ to #v/2005/12-31/snuggery
+				else if (this.href.indexOf('pix/') >= 0) {
+					// pix to #v
+					var newHref = this.href.replace(/pix\//, 'p/#v/');
+	
+					// rewrite 12/31 to 12-31
+					newHref =  newHref.replace(/(#v\/[^\/]*\/)(\d{2})\/(\d{2})(.*)/mg, '$1$2-$3$4');
+					
+					// remove trailing slash, if any
+					newHref =  newHref.replace(/\/$/, '');
+					
+					return newHref;
+				}
 			}
 		});
 		
