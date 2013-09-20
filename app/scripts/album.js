@@ -328,6 +328,21 @@ Album.Collection = Backbone.Collection.extend({
 					
 					// Do some munging on the album's photos
 					if (album.attributes.albumType === 'week') {
+						
+						// Pre 2007 albums store photos in an associative array instead 
+						// of a regular array.  Photo order is in the .childrenOrder array.
+						// Move .children to .photosByPhotoName and make a correctly ordered
+						// array at .children.
+						if (album.attributes.childrenOrder) {
+							album.attributes.photosByPhotoName = album.attributes.children;
+							album.attributes.children = [];
+							_.each(album.attributes.childrenOrder, function(childName) {
+								var photo = album.attributes.photosByPhotoName[childName];
+								album.attributes.children.push(photo);
+							});
+						}
+
+						// process each album photo
 						_.each(album.attributes.children, function(entry, key) {
 													    
 							// If the caption contains any <a hrefs> that link to a gallery
