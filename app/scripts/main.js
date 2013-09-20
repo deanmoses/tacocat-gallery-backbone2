@@ -123,11 +123,14 @@ window.app = {
 		
 		// Iterate over each <a> tag in the caption
 		jqObj.find('a').attr('href', function() {
-			// if the tag has a href and the href is pointing to this server...
+			// if the <a> tag has a href and the href is pointing to this server...
 			if (this.href && this.href.lastIndexOf(window.location.origin, 0) === 0) {
-				// if it's to 'pictures/...'
+				
+				var href = this.href.replace(window.location.origin, '');
+				
+				// rewrite 
+				// 'pictures/v/2008' to '#/v/2008'
 				if (this.href.indexOf('pictures/') >= 0) {
-					// rewrite the 'pictures/' to '#'
 					return this.href.replace(/pictures\//, 'p/#');
 				}
 				// rewrite 
@@ -139,12 +142,17 @@ window.app = {
 					var newHref = this.href.replace(/pix\//, 'p/#v/');
 	
 					// rewrite 12/31 to 12-31
-					newHref =  newHref.replace(/(#v\/[^\/]*\/)(\d{2})\/(\d{2})(.*)/mg, '$1$2-$3$4');
+					newHref =  newHref.replace(/#v\/([^\/]*\/)(\d{2})\/(\d{2})(.*)/mg, window.location.path + '#v/$1$2-$3$4');
 					
 					// remove trailing slash, if any
 					newHref =  newHref.replace(/\/$/, '');
 					
 					return newHref;
+				}
+				// rewrite
+				// '/swim/index.html' to 'swim/'
+				else {
+					return window.location.href + href.replace(/index.html/, '');
 				}
 			}
 		});

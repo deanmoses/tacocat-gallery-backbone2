@@ -282,12 +282,6 @@ Album.Collection = Backbone.Collection.extend({
 						album.attributes.albumType = 'year';
 						album.attributes.parentAlbumPath = '';
 						
-						// Make this year's firsts available
-						// These will already be set on pre 2007 albums
-						if (!album.attributes.firsts) {
-							album.attributes.firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
-						}
-
 						// Process year albums that are pre 2007
 						if (isStaticAlbum) {
 							
@@ -490,6 +484,16 @@ Album.Views.year = {};
  */
 Album.Views.year.getBodyHtml = function(album) {
 
+	// Set up the sidebar HTML
+	// Years 2001-2006 have a pregenerated album.sidebar
+	// Years 2007 & up will have firsts, which we generate album.sidebar from here
+	if (!album.attributes.sidebar) {
+		var firsts = app.Models.firstsModel.getFirstsForYear(album.attributes.title);
+		if (firsts) {
+			album.attributes.sidebar = app.renderTemplate('firsts', {firsts: firsts});
+		}
+	}
+		
 	// Generate the thumbnail HTML
 	// Group the child week albums of the year album by month
 	var months = _.groupBy(album.get('children'), function(child) {
@@ -540,7 +544,6 @@ Album.Views.root = {};
  * Generate the body HTML for the root album
  */
 Album.Views.root.getBodyHtml = function(album) {
-
 	// Generate the thumbnail HTML
 	var thumbnailHtml = '';
 	_.each(album.get('children'), function(child) {

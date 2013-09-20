@@ -5,15 +5,12 @@
 </section>
 {{/if}}
 <div class="container-table">
-	{{#if album.firsts}}
-	<div class="firsts-container">
-		<section class="firsts">
-			<h1 class="hidden">Firsts</h1>
-			{{#each album.firsts}}
-				<p><span>{{what}}</span>{{when}}{{#if who}} ({{who}}){{/if}}</p>
-			{{/each}}
-		</section>
-	</div>
+	{{#if album.sidebar}}
+		<div class="firsts-container">
+			<section class="firsts">
+				{{{album.sidebar}}}
+			</section>
+		</div>
 	{{/if}}
 	<section class="thumbnails">
 		<h1 class="hidden">Pictures</h1>
