@@ -36,8 +36,8 @@ Album.Model = Backbone.Model.extend({
 			//   2013/09-08/someSubAlbum
 			var year = this.id.split('/')[0];
 			
-			// if the year is blank (the root album) or 2007 or greater, the album's in Gallery2
-			if (!year || year >= 2007) {
+			// if the year is 2007 or greater, the album's in Gallery2
+			if (year >= 2007) {
 				return 'http://tacocat.com/pictures/main.php?g2_view=json.Album&album=' + this.id;
 			}
 			// 2006 and earlier years are in static JSON
@@ -167,23 +167,6 @@ Album.Collection = Backbone.Collection.extend({
 				success: function(model, response, options) {
 					//console.log('Success fetching album ' + path);
 					
-					//	
-					// Figure out what type of album it is:  root, year or week
-					//
-					var albumType;
-					// no path: it's the root album
-					if (!path || path.length <= 0) {
-						albumType = 'root';
-					}
-					// no slashes:  it's a year album
-					else if (path.indexOf('/') < 0) {
-						albumType = 'year';
-					}
-					// else it's a subalbum (2005/12-31 or 2005/12-31/snuggery)
-					else {
-						albumType = 'week';
-					}
-					
 					//
 					// If album doesn't have an ID, it's 2006 or older,
 					// and those come from static JSON.  They have a
@@ -192,132 +175,51 @@ Album.Collection = Backbone.Collection.extend({
 					//
 					var isStaticAlbum = (!album.attributes.id);
 					
+					//	
+					// Figure out what type of album it is:  root, year or week
 					//
-					// Process album, inserting or deleting info needed
-					// to display it.
-					//
-					
-					// process root album
-					if (albumType === 'root') {
+					// no path: it's the root album
+					if (!path || path.length <= 0) {
 						album.attributes.albumType = 'root';
-						album.attributes.parentAlbumPath = null;
-						
-						// blank out any title on the root album, we don't want to display it
-						album.attributes.title = undefined;
-						
-						// the root album comes from Gallery2.  Insert all the old 
-						// static years
-						var earlyYearThumbs = [{
-							url: 'v/2006',
-							title: '2006',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/2006-reading.jpg',
-								height: 75,
-								width: 150
-							}
-						}, {
-							url: 'v/2005',
-							title: '2005',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/2005-bath.jpg',
-								height: 75,
-								width: 150
-							}
-						}, {
-							url: 'v/2004',
-							title: '2004',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/2004_fall_milo.jpg',
-								height: 75,
-								width: 75
-							}
-						}, {
-							url: 'v/2003',
-							title: '2003',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/21months_small.jpg',
-								height: 75,
-								width: 75
-							}
-						}, {
-							url: 'v/2002',
-							title: '2002',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/1year_small.jpg',
-								height: 75,
-								width: 75
-							}
-						}, {
-							url: 'v/2001',
-							title: '2001',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/felix_small.jpg',
-								height: 75,
-								width: 75
-							}
-						}, {
-							url: 'v/2001',
-							title: '1973',
-							thumbnail: {
-								url: 'http://tacocat.com/pix/img/1973-dean-2weeks-thumb.jpg',
-								height: 75,
-								width: 75
-							}
-						}];
-						
-						album.attributes.children = album.attributes.children.concat(earlyYearThumbs);
+					}
+					// no slashes:  it's a year album
+					else if (path.indexOf('/') < 0) {
+						album.attributes.albumType = 'year';
+					}
+					// else it's a subalbum (2005/12-31 or 2005/12-31/snuggery)
+					else {
+						album.attributes.albumType = 'week';
 					}
 					
-					// process week album
-					else if (albumType === 'week') {
-						album.attributes.albumType = 'week';
+					//
+					// Set up link to album's parent, needed for the Back button
+					//
+					if (album.attributes.albumType === 'root') {
+						album.attributes.parentAlbumPath = null;
 						
+					}
+					else if (album.attributes.albumType === 'week') {
 						var pathParts = path.split('/');
 						pathParts.pop();
 						album.attributes.parentAlbumPath = pathParts.join('/');
 					}
-					
-					// process year album
-					else if (albumType === 'year') {
-						album.attributes.albumType = 'year';
+					else if (album.attributes.albumType === 'year') {
 						album.attributes.parentAlbumPath = '';
-						
-						// Process year albums that are pre 2007
-						if (isStaticAlbum) {
-							
-							// Process info about my sub albums, which are week albums
-							_.each(album.attributes.children, function(entry, key) {
-								
-								// Generate url to album.
-								// Give url same structure as post 2006 albums
-								if (!entry.url) {
-									// like v/2013/12-31/
-									entry.url = 'v/' + entry.pathComponent;
-								}
-
-								// Generate thumbnail image info.
-								// Thumb will use full-sized image sent through an 
-								// image proxy service (this is temporary, need a more
-								// performant solution like hooking up to a CDN)
-								if (!entry.thumbnail) {
-									var url = 'http://images.weserv.nl/?w=100&h=100&t=square&url=';
-									url = url + entry.fullSizeImage.url.replace('http://', '');
-									entry.thumbnail = {
-										url: url,
-										height: 100,
-										width: 100
-									};
-								}
-							});
-						}
 					}
 					
+					
+					// blank out any title on the root album, we don't want to display it
+					if (album.attributes.albumType === 'year') {
+						album.attributes.title = undefined;
+					}
 					// Add a 'fulltitle' attribute accessbile to templating
 					album.attributes.fulltitle = album.getTitle();
 					
 					// If the album's caption has any links to the the old
 					// picture gallery, rewrite them to point to this UI
-					album.attributes.description = app.rewriteGalleryUrls(album.attributes.description);
+					if (album.attributes.description) {
+						album.attributes.description = app.rewriteGalleryUrls(album.attributes.description);
+					}
 					
 					// If album doesn't have URL, it's a pre 2007 album.
 					// Give it URL of same structure as post 2006 albums.
@@ -326,7 +228,39 @@ Album.Collection = Backbone.Collection.extend({
 						album.attributes.url = 'v/' + album.attributes.pathComponent;
 					}
 					
+					//
+					// If the album is a pre 2007 year, do some munging on its thumbnails
+					//
+					if (album.attributes.albumType === 'year' && isStaticAlbum) {
+						// Each child is thumbnail of a week album
+						_.each(album.attributes.children, function(entry, key) {
+							
+							// Generate url to album.
+							// Give url same structure as post 2006 albums
+							if (!entry.url) {
+								// like v/2013/12-31/
+								entry.url = 'v/' + entry.pathComponent;
+							}
+
+							// Generate thumbnail image info.
+							// Thumb will use full-sized image sent through an 
+							// image proxy service (this is temporary, need a more
+							// performant solution like hooking up to a CDN)
+							if (!entry.thumbnail) {
+								var url = 'http://images.weserv.nl/?w=100&h=100&t=square&url=';
+								url = url + entry.fullSizeImage.url.replace('http://', '');
+								entry.thumbnail = {
+									url: url,
+									height: 100,
+									width: 100
+								};
+							}
+						});
+					}
+					
+					//
 					// Do some munging on the album's photos
+					//
 					if (album.attributes.albumType === 'week') {
 						
 						// Pre 2007 albums store photos in an associative array instead 
@@ -387,7 +321,7 @@ Album.Collection = Backbone.Collection.extend({
 					deferred.resolve(album);
 				},
 				error: function(model, xhr, options) {
-					console.log('Error fetching album ' + path + ': ', xhr, options);
+					console.log('Error fetching album [' + path + ']: ', xhr, options);
 
 					// tell the deferred object to call all .fail() listeners
 					deferred.reject(xhr, options);
@@ -544,7 +478,7 @@ Album.Views.year.getBodyHtml = function(album) {
 };
 
 /**
- * Generate the HTML of the years navigation 2012 | 2013 | etc..
+ * Generate the HTML of the year navigation 2012 | 2013 | etc..
  */
 Album.Views.year.getSecondaryHeader = function() {
 	return app.renderTemplate('album_year_header_secondary');
