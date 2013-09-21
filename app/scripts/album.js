@@ -207,9 +207,12 @@ Album.Collection = Backbone.Collection.extend({
 						album.attributes.parentAlbumPath = '';
 					}
 					
+					//
+					// Set up album's title
+					//
 					
 					// blank out any title on the root album, we don't want to display it
-					if (album.attributes.albumType === 'year') {
+					if (album.attributes.albumType === 'root') {
 						album.attributes.title = undefined;
 					}
 					// Add a 'fulltitle' attribute accessbile to templating
