@@ -39,43 +39,8 @@ Authentication.Model = Backbone.Model.extend({
 	 * Return the URL that Backbone uses to fetch the model data.
 	 */
 	url : function() {
-		// if we're offline / in testing mode
-		if (app.mock) {
-			return 'mock/authentication.json.txt';
-		}
-        else if (app.useRestServer) {
-            return app.restServerUrl('/auth_status');
-        }
-		// else return real URL
-		else {
-			return app.baseAjaxUrl + 'json.Auth';
-		}
+		return app.restServerUrl('/auth_status');
 	},
-
-    /**
-     * Override Backbone's fetch(), which fetches the
-     * model data.  In this case, it fetches whether
-     * the user is authenticated or not.
-     *
-     * If they aren't, this will result in a 401 unauthorized,
-     * and we won't receive a model from the server.
-     *
-     * This only applies to the REST server.  The Gallery2
-     * baseAjaxUrl uses GET for everything
-     */
-    fetch : function(options) {
-        // Backbone's fetch is usually a GET, but for authentication use POST
-        // to ensure the browser doesn't replay the request.
-        if (app.useRestServer) {
-			if (options === undefined) {
-				options = {};
-			}
-            options.type = 'POST';
-        }
-
-        // Call Backbone's regular fetch
-        return Backbone.Collection.prototype.fetch.call(this, options);
-    },
 	
 	/**
 	 * Return true if the current user is logged in.
@@ -106,15 +71,20 @@ Authentication.Model = Backbone.Model.extend({
 		var _this = this;
 
 		$.post( app.restServerUrl('/logout'))
-			// Would only fail if there's a real server error...
-			.fail(function(data) {
-				console.log('Failed to logout', data)
+			// A 401 during logout it means I'm already logged out
+			.fail(function(data, textStatus, xhr) {
+				if (xhr.status == 401) {
+					_this.set({ isAuthenticated: false, isServerAdmin: false })
+				}
+				else {
+					console.log('server error logging out: ', data);
+				}
 			})
 			// Successful logout
 			.done(function(data) {
 				// Update the authentication model.
 				// This will trigger the authentication view, which writes
-				// CSS classes into <body>
+				// CSS classes into <body> and loads admin CSS and JS
 				_this.set(data);
 			});
 	},
