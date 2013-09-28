@@ -4,6 +4,7 @@
 @import "utilities";
 
 $titleColor: #fff;
+$lightText: #d7d7d7;
 
 html, body, #main, .body {
 	height: 100%;
@@ -175,10 +176,10 @@ a.active:after {
 	padding: 3.5em;
 	padding-bottom: 2em;
 	cursor: pointer;
-}
 
-.login-button:hover, .logout-button:hover {
-	color: #d7d7d7;
+	&:hover {
+		color: $lightText;
+	}
 }
 
 .authenticated .login-button {
@@ -193,14 +194,19 @@ a.active:after {
 }
 
 .login-form {
+	background-color: #fff;
 	input[type=text],
 	input[type=password] {
 		border: solid #777777 1px;
 	}
 	.cancel {
+		color: $lightText;
 		padding: 1em;
 		cursor: pointer;
 		text-align: right;
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 }
 
