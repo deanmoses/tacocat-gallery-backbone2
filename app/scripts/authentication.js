@@ -15,7 +15,9 @@
 /*global app, $, _, Backbone, alert, Album, Photo*/
 
 // create the Authentication object
-var Authentication = {};
+var Authentication = {
+	Views : {}
+};
 
 /**
  * Authentication Model
@@ -43,11 +45,36 @@ Authentication.Model = Backbone.Model.extend({
 		if (app.mock) {
 			return 'mock/authentication.json.txt';
 		}
+        else if (app.useRestServer) {
+            return app.restServerUrl() + '/auth_status';
+        }
 		// else return real URL
 		else {
 			return app.baseAjaxUrl + 'json.Auth';
 		}
 	},
+
+    /**
+     * Override Backbone's fetch(), which fetches the
+     * model data.  In this case, it fetches whether
+     * the user is authenticated or not.
+     *
+     * If they aren't, this will result in a 401 unauthorized,
+     * and we won't receive a model from the server.
+     *
+     * This only applies to the REST server.  The Gallery2
+     * baseAjaxUrl uses GET for everything
+     */
+    fetch : function(options) {
+        // usually fetch is a GET, but for authentication use POST
+        // to make very sure browser doesn't replay them.
+        if (app.useRestServer) {
+            options.type = 'POST';
+        }
+
+        //Call Backbone's regular fetch
+        return Backbone.Collection.prototype.fetch.call(this, options);
+    },
 	
 	/**
 	 * Return true if the current user is logged in.
@@ -71,12 +98,65 @@ Authentication.Model = Backbone.Model.extend({
 	}
 });
 
+
+/**
+ * Login screen
+ */
+Authentication.Views.LoginPage = Backbone.View.extend({
+
+	initialize: function() {
+		_.bindAll(this, 'render', 'doLogin');
+		//this.listenTo(this.model, 'change', this.render);
+	},
+
+	render : function() {
+		// Blank out the display area
+		this.$el.empty();
+
+		// Generate the header HTML
+		var headerHtml = app.renderTemplate('album_root_header', this.model);
+
+		// Generate the body HTML
+		var bodyHtml = app.renderTemplate('login_body', this.model);
+
+		// Generate the layout HTML
+		var html = app.renderTemplate('layout_main', {
+			pageType: 'login',
+			header: headerHtml,
+			body: bodyHtml
+		});
+
+		// Write the HTML to the DOM
+		this.$el.html(html);
+
+		// Set the browser title
+		app.setTitle('Login');
+
+		// Hook up the form submit button
+		this.$el.find('.submit.button').click(this.doLogin);
+	},
+
+	doLogin: function(data) {
+		var username = this.$el.find('.login-form input[type=text]').val();
+		var password = this.$el.find('.login-form input[type=password]').val();
+
+		// Send the data using post
+		$.post( app.restServerUrl() + '/login', { username: username, password: password } )
+		.done(function( data ) {
+			console.log('done with login', data);
+		})
+		.fail(function() {
+			console.log( "error" );
+		});
+	}
+}),
+
 /**
  * Authentication View
  * 
  * If the user is authenticated, write some classes into the body tag.
  */
-Authentication.View = Backbone.View.extend({
+Authentication.Views.AuthClass = Backbone.View.extend({
 	
 	/**
 	 * Called when a new instance of this view is created

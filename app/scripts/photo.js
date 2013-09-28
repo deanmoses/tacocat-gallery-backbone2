@@ -116,17 +116,34 @@ Photo.Views.PhotoPage = Backbone.View.extend({
 		var title = this.$el.find('.caption-edit-controls input[name=\'title\']').val();
 		var description = this.$el.find('.caption-edit-controls textarea#caption').val();
 
-		// Update the server if the new title / description is actually different
+		// Only update the server if the new title and/or description is actually different
 		if (this.model.title !== title || this.model.description !== description) {
 			//console.log('Submitting new title: ' + title + ' and description: ' + description);
 
+			// Put title and/or description in a JSON-formattable request body
+			var requestBody = {};
+			if (this.model.title !== title) {
+				requestBody.title = title;
+			}
+			if (this.model.description !== description) {
+				requestBody.description = description;
+			}
+			
+			debugger;
+			
+			var fullPath = this.model.album.pathComponent + '/' + this.model.pathComponent;
+			
 			// Send info to server
-			$.post(
-				'http://tacocat.com/pictures/main.php?g2_view=json.SaveCaption',
-				{ id: this.model.id, title: title, description: description }
-			)
+			$.ajax({
+				type: 'PUT',
+				//url: 'http://tacocat.com/pictures/main.php?g2_view=json.SaveCaption',
+				url: 'http://flask.tacocat.com/' + fullPath,
+				contentType: "application/json",
+				data: JSON.stringify(requestBody)
+			})
 			// On success
 			.done(function(data) {
+				debugger;
 				// Update the title and description on our internal model
 		        _this.model.title = title;
 			    _this.model.description = description;
@@ -136,8 +153,9 @@ Photo.Views.PhotoPage = Backbone.View.extend({
 			})
 			// On error
 			.fail(function(data) {
+				debugger;
 				alert('error: ' + data);
-				console.log('Error saving caption', data);
+				console.log('Error saving caption / title', data);
 			});
 		}
 		else {

@@ -159,6 +159,44 @@ a.active:after {
 	overflow: hidden;
 }
 
+.login-button {
+    color: transparent;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+  	padding: 3em;
+}
+
+.login-button:hover {
+  color: #d7d7d7;
+}
+
+.login .login-button:hover {
+	display: none;
+}
+
+.login-form {
+  .field span {
+	display: inline-block;
+	width: 20em;
+	text-align: right;
+	padding-right: 1em;
+  }
+
+  input[type=text],
+  input[type=password] {
+  	border: solid #777777 1px;
+  }
+  .button {
+	display: block;
+	width: 15em;
+	padding: 1em;
+	margin-left: 20em;
+  }
+  .button.submit {
+  	background-color: #d7d7d7;
+  }
+}
 
 /**
  * ALBUM PAGE STYLING

@@ -1,7 +1,7 @@
 'use strict';
 
 // tell JSHint to assume existence of these global vars
-/*global app, $, _, Backbone, alert, Album, Photo*/
+/*global app, $, _, Backbone, alert, Album, Photo, Authentication*/
 
 /**
  * Backbone.js router.
@@ -21,6 +21,7 @@ var Router = Backbone.Router.extend({
 	routes: {
 		'v/*path.html': 'viewPhoto',
 		'v/*path': 'viewAlbum',
+		'login': 'login',
 		'*path': 'notFound'
 	},
 	
@@ -34,6 +35,16 @@ var Router = Backbone.Router.extend({
 	
 	unwait: function() {
 		$('#waiting').removeClass('on');
+	},
+
+	/**
+	 * Show the login screen
+	 */
+	login: function() {
+		console.log('login');
+		new Authentication.Views.LoginPage({
+			el: $('#main')
+		}).render();
 	},
 	
 	/**
@@ -49,7 +60,7 @@ var Router = Backbone.Router.extend({
 		
 		//console.log('Router.viewPhoto() photo ' + photoId + ' in album ' + albumPath);
 		
-		// fetch the album, either from cache or from server
+		// fetch the album the photo lives in, either from cache or from server
 		Album.Store.fetchAlbum(albumPath)
 			.fail(function(xhr, options) {
 				console('Router.viewPhoto() couldn\'t find album ' + path + '. Error: ', xhr, options);

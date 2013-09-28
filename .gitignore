@@ -25,3 +25,6 @@ app/templates/templates.js
 
 # log files
 *.log
+
+# JetBrains editor dir
+.idea/

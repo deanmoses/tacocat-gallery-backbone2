@@ -20,17 +20,50 @@ window.app = {
 	Views: {},
 	Routers: {},
 
+    /**
+     * The base of the URL for all ajax calls.
+     *
+     * This is to the Gallery2 server, will be replaced by
+     * the REST server.
+     */
+    baseAjaxUrl: 'http://tacocat.com/pictures/main.php?g2_view=',
+
 	/**
-	 * Flag as to whether the system should be run offline.
+	 * True:  system should be run offline.
 	 * Only for development when disconnected.
+     * Obsolete that there's a local REST server.
 	 */
 	mock: false,
 
-	/**
-	 * The base of the URL for all JSON calls
-	 */
-	baseAjaxUrl: 'http://tacocat.com/pictures/main.php?g2_view=',
-	
+    /**
+     * True: use the REST server instead of the Gallery2 server.
+     */
+    useRestServer: true,
+
+    /**
+     * The base URL for the REST server when in local dev mode
+     */
+    localRestServerUrl: 'http://127.0.0.1:5000',
+
+    /**
+     * The base URL for the REST server when in prod
+     */
+    prodRestServerUrl: 'http://flask.tacocat.com',
+
+    /**
+     * URL to the REST server
+     */
+    restServerUrl: function() {
+        return this.isLocal() ? this.localRestServerUrl : this.prodRestServerUrl
+    },
+
+    /**
+     * True: system should connect to the local not remote REST server.
+     */
+    isLocal: function() {
+        return window.location.hostname.indexOf('tacocat.com') < 0;
+    },
+
 	/**
 	 * Helper function to set the browser title
 	 */
@@ -187,7 +220,7 @@ window.app = {
 app.Models.authenticationModel = new Authentication.Model();
 
 // Will write CSS classes into the body if the user is authenticated
-app.Models.authenticationView = new Authentication.View({model:app.Models.authenticationModel});
+app.Models.authenticationView = new Authentication.Views.AuthClass({model:app.Models.authenticationModel});
 
 // Get the firsts
 app.Models.firstsModel = new Firsts.Model();
