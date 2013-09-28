@@ -100,6 +100,7 @@ a.active:after {
 	}
 	
 	.admin-controls {
+		display: none;
 		position: absolute;
 		left: 0;
 		bottom: 0;
@@ -110,6 +111,7 @@ a.active:after {
 		min-width: 20em;
 		
 		a {
+			color: #999;
 			display: none;
 			cursor: pointer;
 		}
@@ -133,6 +135,10 @@ a.active:after {
 			width: 100%;
 		}
 	}
+}
+
+.is-site-admin #header .admin-controls {
+	display: block;
 }
 
 #secondary-header {
@@ -160,6 +166,70 @@ a.active:after {
 	overflow: hidden;
 }
 
+//
+// dialog that overlays the rest of the screen
+//
+#fullscreen-dialog {
+	// blocks out anything under the dialog
+	.overlay {
+		z-index: 100; // higher than .login-button and .logout-button
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		background-color: #fff;
+		opacity: 0.9;
+	}
+
+	// where the actual contents of the dialog go
+	.contents {
+		z-index: 101; // higher than .login-button and .logout-button
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		padding: 5em;
+
+		// there should be only one element inside me
+		// containing the actual content of the dialog
+		> :first-child {
+			background-color: #fff;
+			padding: 1em;
+			border: solid #777777 1px;
+			border-radius: 8px;
+
+			h3 {
+				margin-bottom: 1em;
+				font-weight: bold;
+			}
+
+			input[type=text],
+			input[type=date] {
+				border: solid #777777 1px;
+			}
+
+			input[name=summary] {
+				width: 30em;
+			}
+
+			.cancel {
+				margin-top: 1em;
+				cursor: pointer;
+				&:hover {
+					text-decoration: underline;
+				}
+			}
+		}
+	}
+}
+
+//
+// dialog for login form
+//
 #dialog {
 	position: absolute;
 	bottom: 0;

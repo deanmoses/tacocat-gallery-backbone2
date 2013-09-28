@@ -44,6 +44,8 @@ var Router = Backbone.Router.extend({
 
 	/**
 	 * Show the login dialog
+	 *
+	 * This doesn't have a URL associated with it; it must be invoked via JS.
 	 */
 	login: function() {
 		new Authentication.Views.LoginPage({
@@ -53,10 +55,44 @@ var Router = Backbone.Router.extend({
 
 	/**
 	 * Do the logout
+	 *
+	 * This doesn't have a URL associated with it; it must be invoked via JS.
 	 */
 	logout: function() {
 		// Does the logout, which triggers a view which changes <body> classes
 		app.Models.authenticationModel.doLogout();
+	},
+
+	/**
+	 * Show the create album dialog.
+	 *
+	 * This doesn't have a URL associated with it; it must be invoked via JS.
+	 *
+	 * @param path Path to PARENT of new album
+	 */
+	newAlbum: function(path) {
+		var _this = this;
+		this.wait();
+		//console.log('Router.viewAlbum(path: [' + path + '])');
+
+		// regularize path by getting rid of any preceding or trailing slashes
+		path = this.normalizePath(path);
+
+		// fetch album, either from cache or from server
+		Album.Store.fetchAlbum(path)
+			.fail(function(xhr, options) {
+				console.log('Couldn\'t find album ' + path + '. Error: ', xhr, options);
+			})
+			.done(function(album) {
+				//console.log('URL router viewAlbum() got album ' + path + '.  Album: ' , album);
+				new Album.Views.NewAlbum({
+					model: album,
+					el: $('#fullscreen-dialog .contents')
+				}).render();
+			})
+			.always(function(){
+				_this.unwait();
+			});
 	},
 
 	/**

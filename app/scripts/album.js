@@ -358,6 +358,8 @@ Album.Views.Main = Backbone.View.extend({
 	render: function() {
 		//console.log('Album.Views.Main.render() model: ', this.model);
 
+		var _this = this;
+
 		// Render different types of albums differently
 		var albumType = this.model.attributes.albumType;
 
@@ -392,8 +394,76 @@ Album.Views.Main = Backbone.View.extend({
 		// Set the page title
 		app.setTitle(this.model.getTitle());
 
+		// Hook up the create album button
+		this.$el.find('.admin-button').click(function() {
+			app.Routers.main.newAlbum(_this.model.attributes.pathComponent);
+		})
+
 		// To support chaining
 		return this;
+	}
+});
+
+/**
+ * Show the Create New Album dialog
+ */
+Album.Views.NewAlbum = Backbone.View.extend({
+
+	initialize: function() {
+		_.bindAll(this, 'render', 'hide');
+	},
+
+	render: function() {
+		console.log('Album.Views.NewAlbum.render()', this.model);
+
+		var _this = this;
+
+		// Blank out the display area
+		this.$el.empty();
+
+		// Generate the HTML
+		var html = app.renderTemplate('album_create_dialog', this.model);
+
+		// Write the HTML to the DOM
+		this.$el.html(html);
+
+		// Set the date input to today
+		this.$el.find('input[type=date]').val(new Date().toJSON().slice(0,10));
+
+		if (this.model.attributes.albumType === 'year') {
+			this.$el.find('input[name=title]').addClass('hidden')
+		}
+
+		// Show the dialog
+		this.$el.parent().removeClass('hidden');
+
+		// Hook up submit button
+		this.$el.find('[name=submit]').click(this.createAlbum);
+
+		// Hook up cancel button
+		this.$el.find('.cancel').click(this.hide);
+
+		// Submit on [ENTER] in password field
+		this.$el.find('input[name=summary]').keyup(function(ev) {
+			if (ev.which === 13) {
+				_this.createAlbum();
+			}
+		});
+	},
+
+	createAlbum: function() {
+		console.log('I should really create album');
+	},
+
+	/**
+	 * Hide the create new album dialog
+	 */
+	hide: function() {
+		// Hide the dialog
+		this.$el.parent().addClass('hidden');
+
+		// Blank out the display area
+		this.$el.empty();
 	}
 });
 
