@@ -21,32 +21,44 @@ var Router = Backbone.Router.extend({
 	routes: {
 		'v/*path.html': 'viewPhoto',
 		'v/*path': 'viewAlbum',
-		'login': 'login',
 		'*path': 'notFound'
 	},
 	
 	initialize: function() {
 		_.bindAll(this);
 	},
-	
+
+	/**
+	 * Show waiting indicator
+	 */
 	wait: function() {
 		$('#waiting').addClass('on');
 	},
-	
+
+	/**
+	 * Hide waiting indicator
+	 */
 	unwait: function() {
 		$('#waiting').removeClass('on');
 	},
 
 	/**
-	 * Show the login screen
+	 * Show the login dialog
 	 */
 	login: function() {
-		console.log('login');
 		new Authentication.Views.LoginPage({
-			el: $('#main')
+			el: $('#dialog')
 		}).render();
 	},
-	
+
+	/**
+	 * Do the logout
+	 */
+	logout: function() {
+		// Does the logout, which triggers a view which changes <body> classes
+		app.Models.authenticationModel.doLogout();
+	},
+
 	/**
 	 * Show the photo page
 	 */

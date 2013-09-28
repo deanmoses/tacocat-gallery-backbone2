@@ -53,8 +53,12 @@ window.app = {
     /**
      * URL to the REST server
      */
-    restServerUrl: function() {
-        return this.isLocal() ? this.localRestServerUrl : this.prodRestServerUrl
+    restServerUrl: function(path) {
+        var url = this.isLocal() ? this.localRestServerUrl : this.prodRestServerUrl;
+		if (path) {
+			url = url + path;
+		}
+		return url;
     },
 
     /**
@@ -204,11 +208,7 @@ window.app = {
 
 		// Fetching this model will trigger a render of the authentication view,
 		// which writes some CSS classes into the body tag
-		app.Models.authenticationModel.fetch({
-			error : function(model, xhr, options) {
-				console.log('gallery.authentication.fetch() - error.  xhr: ', xhr);
-			}
-		});
+		app.Models.authenticationModel.fetch();
 
 		// Trigger the initial route 
 		Backbone.history.start({ pushState: false /* turn on/off the HTML5 History API */});
@@ -222,12 +222,17 @@ app.Models.authenticationModel = new Authentication.Model();
 // Will write CSS classes into the body if the user is authenticated
 app.Models.authenticationView = new Authentication.Views.AuthClass({model:app.Models.authenticationModel});
 
+
 // Get the firsts
 app.Models.firstsModel = new Firsts.Model();
 app.Models.firstsModel.fetch();
 
 // Create the master router.  All navigation is triggered from this
 app.Routers.main = new Router();
+
+// Wire up the login and logout buttons
+$('.login-button').click(app.Routers.main.login);
+$('.logout-button').click(app.Routers.main.logout);
 
 $(document).ready(function () {
     app.init();

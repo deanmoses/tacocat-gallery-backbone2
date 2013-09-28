@@ -159,43 +159,49 @@ a.active:after {
 	overflow: hidden;
 }
 
-.login-button {
+#dialog {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	padding-right: 3.5em;
+	z-index: 100; // higher than .login-button and .logout-button
+}
+
+.login-button, .logout-button {
     color: transparent;
 	position: absolute;
 	bottom: 0;
 	right: 0;
-  	padding: 3em;
+	padding: 3.5em;
+	padding-bottom: 2em;
+	cursor: pointer;
 }
 
-.login-button:hover {
-  color: #d7d7d7;
+.login-button:hover, .logout-button:hover {
+	color: #d7d7d7;
 }
 
-.login .login-button:hover {
+.authenticated .login-button {
 	display: none;
 }
 
-.login-form {
-  .field span {
-	display: inline-block;
-	width: 20em;
-	text-align: right;
-	padding-right: 1em;
-  }
-
-  input[type=text],
-  input[type=password] {
-  	border: solid #777777 1px;
-  }
-  .button {
+.logout-button {
+	display: none;
+}
+.authenticated .logout-button {
 	display: block;
-	width: 15em;
-	padding: 1em;
-	margin-left: 20em;
-  }
-  .button.submit {
-  	background-color: #d7d7d7;
-  }
+}
+
+.login-form {
+	input[type=text],
+	input[type=password] {
+		border: solid #777777 1px;
+	}
+	.cancel {
+		padding: 1em;
+		cursor: pointer;
+		text-align: right;
+	}
 }
 
 /**

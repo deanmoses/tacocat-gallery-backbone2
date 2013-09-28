@@ -32,21 +32,19 @@ Authentication.Model = Backbone.Model.extend({
 	initialize : function() {
 		// Ensure that the 'this' variable is pointing to myself 
 		// in the specified methods in all contexts
-		_.bindAll(this, 'isAuthenticated', 'isSiteAdmin');
+		_.bindAll(this, 'isAuthenticated', 'isSiteAdmin', 'doLogout');
 	},
 
 	/**
 	 * Return the URL that Backbone uses to fetch the model data.
 	 */
 	url : function() {
-		//console.log('models.Authentication.url() called');
-		
 		// if we're offline / in testing mode
 		if (app.mock) {
 			return 'mock/authentication.json.txt';
 		}
         else if (app.useRestServer) {
-            return app.restServerUrl() + '/auth_status';
+            return app.restServerUrl('/auth_status');
         }
 		// else return real URL
 		else {
@@ -66,13 +64,16 @@ Authentication.Model = Backbone.Model.extend({
      * baseAjaxUrl uses GET for everything
      */
     fetch : function(options) {
-        // usually fetch is a GET, but for authentication use POST
-        // to make very sure browser doesn't replay them.
+        // Backbone's fetch is usually a GET, but for authentication use POST
+        // to ensure the browser doesn't replay the request.
         if (app.useRestServer) {
+			if (options === undefined) {
+				options = {};
+			}
             options.type = 'POST';
         }
 
-        //Call Backbone's regular fetch
+        // Call Backbone's regular fetch
         return Backbone.Collection.prototype.fetch.call(this, options);
     },
 	
@@ -94,67 +95,147 @@ Authentication.Model = Backbone.Model.extend({
 	 * model is actually fetched from the server.
 	 */
 	isSiteAdmin : function() {
-		return this.get('isSiteAdmin') === true;
+		return this.isAuthenticated() && this.get('isSiteAdmin') === true;
+	},
+
+	/**
+	 * Do Logout
+	 */
+	doLogout : function() {
+		// Make 'this' available to the following anonymous functions
+		var _this = this;
+
+		$.post( app.restServerUrl('/logout'))
+			// Would only fail if there's a real server error...
+			.fail(function(data) {
+				console.log('Failed to logout', data)
+			})
+			// Successful logout
+			.done(function(data) {
+				// Update the authentication model.
+				// This will trigger the authentication view, which writes
+				// CSS classes into <body>
+				_this.set(data);
+			});
+	},
+
+	/**
+	 * Do login.
+	 * You can attach a .done() and .fail() to this.
+	 */
+	doLogin : function(username, password) {
+		// build a jQuery Deferred object
+		var deferred = $.Deferred();
+
+		// Make 'this' available to the following anonymous functions
+		var _this = this;
+
+		// Login
+		$.post( app.restServerUrl('/login'), { username: username, password: password } )
+			// I receive a 401 if login fails
+			.fail(function(data) {
+				// tell the deferred object to call all .fail() listeners
+				deferred.reject();
+			})
+			// Successful login
+			.done(function(data) {
+				// Update the authentication model.
+				// This will trigger the authentication view, which writes
+				// CSS classes into <body> and loads admin CSS and JS
+				_this.set(data);
+
+				// resolve the deferred immediately with success
+				deferred.resolve();
+			});
+
+		// return the jQuery Promise so that the callers can use .then(), .always(), .done() and .fail()
+		return deferred.promise();
 	}
 });
 
 
 /**
- * Login screen
+ * Login dialog
  */
 Authentication.Views.LoginPage = Backbone.View.extend({
 
 	initialize: function() {
-		_.bindAll(this, 'render', 'doLogin');
-		//this.listenTo(this.model, 'change', this.render);
+		_.bindAll(this, 'render', 'doLogin', 'hide');
 	},
 
+	/**
+	 * Show login dialog
+	 */
 	render : function() {
+
 		// Blank out the display area
 		this.$el.empty();
 
-		// Generate the header HTML
-		var headerHtml = app.renderTemplate('album_root_header', this.model);
-
-		// Generate the body HTML
-		var bodyHtml = app.renderTemplate('login_body', this.model);
-
-		// Generate the layout HTML
-		var html = app.renderTemplate('layout_main', {
-			pageType: 'login',
-			header: headerHtml,
-			body: bodyHtml
-		});
+		// Generate the HTML
+		var html = app.renderTemplate('login_dialog', this.model);
 
 		// Write the HTML to the DOM
 		this.$el.html(html);
 
-		// Set the browser title
-		app.setTitle('Login');
+		// Show the dialog
+		this.$el.removeClass('hidden');
 
-		// Hook up the form submit button
-		this.$el.find('.submit.button').click(this.doLogin);
+		// Hook up cancel button
+		this.$el.find('.cancel').click(this.hide);
+
+		// Submit on [ENTER] in password field
+		var _this = this;
+		this.$el.find('.login-form input[type=password]').keyup(function(ev) {
+			if (ev.which === 13) {
+				_this.doLogin();
+			}
+		});
 	},
 
+	/**
+	 * Process login submit
+	 */
 	doLogin: function(data) {
+		// Hide any previous failure message
+		this.$el.find('.login-form .fail-message').addClass('hidden')
+
+		// Get credentials the user entered
 		var username = this.$el.find('.login-form input[type=text]').val();
 		var password = this.$el.find('.login-form input[type=password]').val();
 
-		// Send the data using post
-		$.post( app.restServerUrl() + '/login', { username: username, password: password } )
-		.done(function( data ) {
-			console.log('done with login', data);
-		})
+		// Make 'this' available to the following anonymous functions
+		var _this = this;
+
+		// Login
+		app.Models.authenticationModel.doLogin(username, password)
 		.fail(function() {
-			console.log( "error" );
+			// show error message
+			_this.$el.find('.login-form .fail-message').removeClass('hidden')
+		})
+		// Successful login
+		.done(function( data ) {
+			_this.hide();
 		});
+	},
+
+	/**
+	 * Hide the login dialog
+	 */
+	hide: function() {
+		// Hide the dialog
+		this.$el.addClass('hidden');
+
+		// Blank out the display area
+		// Just to keep the DOM lightweight
+		this.$el.empty();
 	}
 }),
 
 /**
  * Authentication View
  * 
- * If the user is authenticated, write some classes into the body tag.
+ * If the user is authenticated, write some classes into <body>
+ * and load admin CSS and JS.
  */
 Authentication.Views.AuthClass = Backbone.View.extend({
 	
@@ -189,9 +270,13 @@ Authentication.Views.AuthClass = Backbone.View.extend({
 		else {
 			$('body').removeClass('is-site-admin');
 		}
-		
+
+		if (!this.model.isSiteAdmin()) {
+			return;
+		}
+
 		// load the scripts only needed by admins
-		
+
 		// define a $.cachedScript() method that allows fetching a cached script:
 		jQuery.getCachedScript = function(url, options) {
 
@@ -224,6 +309,7 @@ Authentication.Views.AuthClass = Backbone.View.extend({
 		.fail(function(jqxhr, settings, exception) {
 			console.log('Error loading rich text editor parser rules: ' + exception);
 		});
-			
+
 	}
+
 });
