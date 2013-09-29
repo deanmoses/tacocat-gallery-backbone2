@@ -3,8 +3,8 @@
 	<h3>Create a new album under {{parentTitle}}</h3>
     <div class="error message hidden"></div>
 	{{#if showDate}}<input name="date" type="date" placeholder="publication date" max="{{maxDate}}" min="{{minDate}}" value="{{initialDate}}" {{#if dateDisabled}}disabled{{/if}} autofocus/>{{/if}}
-	{{#if showTitle}}<input name="title" type="text" placeholder="Title" required />{{/if}}
-    <input name="summary" type="text" placeholder="Summary, like 'Thanksgiving'" />
+	{{#if showTitle}}<input name="title" type="text" placeholder="Title (required)" required />{{/if}}
+    <input name="summary" type="text" placeholder="Optional summary, like 'Thanksgiving'" />
 	<button name="submit" class="button">Submit</button>
     <div class="cancel">Cancel</div>
 </div>

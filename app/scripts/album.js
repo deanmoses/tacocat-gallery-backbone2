@@ -136,18 +136,55 @@ Album.Collection = Backbone.Collection.extend({
 	 * Create a new album.
 	 *
 	 * @param parentAlbum
-	 * @param date
+	 * @param creationDate
 	 * @param title
 	 * @param summary
 	 */
-	createAlbum: function(parentAlbum, date, title, summary) {
-		// build a jQuery Deferred object so that my callers can do .done() and .fail()
+	createAlbum: function(parentAlbum, creationDate, title, summary) {
+		// build a jQuery Deferred object to let my callers do .done() and .fail()
 		var deferred = $.Deferred();
 
-		var albumPath = parentAlbum.fullPath + date;
+		// figure out path of new album
+		var albumPath = parentAlbum.attributes.fullPath;
+
+		// if parent is root
+		if (parentAlbum.attributes.albumType === 'root') {
+			albumPath = new Date(creationDate).getYear().toString();
+		}
+		// if parent is a year
+		else if (parentAlbum.attributes.albumType === 'year') {
+			var date = new Date(creationDate);
+			var month =  ('0' + (date.getMonth()+1)).slice(-2);
+			var day = ('0' + (date.getDate()+1)).slice(-2);
+			albumPath = albumPath + '/' + month + '-' + day;
+		}
+		// if parent is a week
+		else if (parentAlbum.attributes.albumType === 'week') {
+			var pathComponent = $.trim(title).replace(/\s+|-+/g,"_").replace(/'|"/g,"");
+
+			if (!pathComponent) {
+				deferred.reject('Title is blank');
+			}
+
+			// parentAlbum + title stripped of non alphanum characters
+			albumPath = albumPath + '/' + pathComponent.toLowerCase();
+		}
+		else {
+			throw 'Unknown album type: [' + this.model.attributes.albumType + ']';
+		}
+
+		console.log('new album: ', albumPath);
+
+		var postData = {};
+		if (title) {
+			postData.title = title;
+		}
+		if (summary) {
+			postData.summary = summary;
+		}
 
 		// Send create album request
-		$.post( app.restServerUrl('/album/' + albumPath))
+		$.post( app.restServerUrl('/album/' + albumPath), postData)
 			// Pass failure message back to calling view
 			.fail(function(data, textStatus, xhr) {
 				var msg = textStatus;
@@ -503,7 +540,7 @@ Album.Views.NewAlbum = Backbone.View.extend({
 			dialogModel.showTitle = true;
 		}
 		else {
-			throw 'Invalid album type: [' + this.model.attributes.albumType + ']';
+			throw 'Unknown album type: [' + this.model.attributes.albumType + ']';
 		}
 
 		// Blank out the display area
@@ -550,9 +587,9 @@ Album.Views.NewAlbum = Backbone.View.extend({
 		this.setErrorMessage();
 
 		// Get form values
-		var date = this.$el.find('[name=date]');
-		var title = this.$el.find('[name=title]');
-		var summary = this.$el.find('[name=summary]');
+		var date = this.$el.find('[name=date]').val();
+		var title = this.$el.find('[name=title]').val();
+		var summary = this.$el.find('[name=summary]').val();
 
 		// Create the new album
 		Album.Store.createAlbum(this.model, date, title, summary)
