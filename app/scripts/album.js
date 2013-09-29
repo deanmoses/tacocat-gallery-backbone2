@@ -396,7 +396,7 @@ Album.Views.Main = Backbone.View.extend({
 
 		// Hook up the create album button
 		this.$el.find('.admin-button').click(function() {
-			app.Routers.main.newAlbum(_this.model.attributes.pathComponent);
+			app.Routers.main.newAlbum(_this.model.attributes.fullPath);
 		})
 
 		// To support chaining
@@ -414,7 +414,7 @@ Album.Views.NewAlbum = Backbone.View.extend({
 	},
 
 	render: function() {
-		console.log('Album.Views.NewAlbum.render()', this.model);
+		console.log('Album.Views.NewAlbum.render()', this.model.attributes);
 
 		var _this = this;
 
@@ -422,16 +422,28 @@ Album.Views.NewAlbum = Backbone.View.extend({
 		this.$el.empty();
 
 		// Generate the HTML
-		var html = app.renderTemplate('album_create_dialog', this.model);
+		var html = app.renderTemplate('album_create_dialog', this.model.attributes);
 
 		// Write the HTML to the DOM
 		this.$el.html(html);
 
-		// Set the date input to today
-		this.$el.find('input[type=date]').val(new Date().toJSON().slice(0,10));
-
+		// If the parent album is a year...
 		if (this.model.attributes.albumType === 'year') {
-			this.$el.find('input[name=title]').addClass('hidden')
+
+			// Don't let user enter a title.  It'll be set to something like "November 8"
+			this.$el.find('input[name=title]').addClass('hidden');
+
+			var datePicker = this.$el.find('input[type=date]');
+
+			// Confine date picker to within the parent year
+			var year = this.model.attributes.pathComponent;
+			datePicker.attr('max', year + '-12-31');
+			datePicker.attr('min', year + '-01-01');
+
+			// If parent is current year, set the date input to today
+			if (year == new Date().getFullYear()) {
+				datePicker.val(new Date().toJSON().slice(0,10));
+			}
 		}
 
 		// Show the dialog
