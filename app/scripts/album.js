@@ -133,6 +133,49 @@ Album.Collection = Backbone.Collection.extend({
 	},
 
 	/**
+	 * Create a new album.
+	 *
+	 * @param parentAlbum
+	 * @param date
+	 * @param title
+	 * @param summary
+	 */
+	createAlbum: function(parentAlbum, date, title, summary) {
+		// build a jQuery Deferred object so that my callers can do .done() and .fail()
+		var deferred = $.Deferred();
+
+		var albumPath = parentAlbum.fullPath + date;
+
+		// Send create album request
+		$.post( app.restServerUrl('/album/' + albumPath))
+			// Pass failure message back to calling view
+			.fail(function(data, textStatus, xhr) {
+				var msg = textStatus;
+				if (data.responseText) {
+					try {
+						var response = $.parseJSON(data.responseText);
+						if (response.message) {
+							msg = response.message;
+						}
+					} catch(err) {console.log("error", err)}
+				}
+				else if ('statusText' in data) {
+					msg = data.statusText;
+				}
+				deferred.reject(msg);
+			})
+			// Successful creation
+			.done(function(data) {
+				// TODO:  add newly created album to AlbumStore
+
+				deferred.done();
+			});
+
+		// return the jQuery Promise so that the callers can use .then(), .always(), .done() and .fail()
+		return deferred.promise();
+	},
+
+	/**
 	 * Retrieve an album model by full path, like '2010/01_31'.
 	 *
 	 * This is asynchronous -- you have to register a callback via
@@ -141,10 +184,10 @@ Album.Collection = Backbone.Collection.extend({
 	fetchAlbum: function(path) {
 		//console.log('Album.Collection.fetchAlbum('' + path + '')');
 
-		// 'this' points to 
-		var that = this;
+		// allow subfunctions to access my 'this'
+		var _this = this;
 
-		// build a jQuery Deferred object
+		// build a jQuery Deferred object so that my callers can do .done() and .fail()
 		var deferred = $.Deferred();
 
 		// look for album in my cache of albums
@@ -318,7 +361,7 @@ Album.Collection = Backbone.Collection.extend({
 					}
 
 					// cache the album
-					that.push(album);
+					_this.push(album);
 
 					// tell the deferred object to call all done() listeners
 					deferred.resolve(album);
@@ -358,6 +401,7 @@ Album.Views.Main = Backbone.View.extend({
 	render: function() {
 		//console.log('Album.Views.Main.render() model: ', this.model);
 
+		// Allow subfunctions to access my 'this'
 		var _this = this;
 
 		// Render different types of albums differently
@@ -410,61 +454,129 @@ Album.Views.Main = Backbone.View.extend({
 Album.Views.NewAlbum = Backbone.View.extend({
 
 	initialize: function() {
-		_.bindAll(this, 'render', 'hide');
+		_.bindAll(this, 'render', 'handleSubmit', 'hide', 'setErrorMessage');
 	},
 
 	render: function() {
-		console.log('Album.Views.NewAlbum.render()', this.model.attributes);
+		//console.log('Album.Views.NewAlbum.render()', this.model.attributes);
 
+		// Allow subfunctions to access my 'this'
 		var _this = this;
+
+		// Set up info needed by the create album dialog's template
+		var dialogModel = {
+			parentTitle: this.model.attributes.title,
+			maxDate: '',
+			minDate: '',
+			initialDate: '',
+			showDate: true, // Sub sub albums won't show date
+			showTitle: false // Unless it's a sub sub album, don't let user enter a title.  It'll be set to something like "November 8"
+		};
+
+		// If the parent album is a year...
+		if (this.model.attributes.albumType === 'year') {
+
+			// Confine date picker to within the parent year
+			var year = this.model.attributes.pathComponent;
+			dialogModel.maxDate = year + '-12-31';
+			dialogModel.minDate = year + '-01-01';
+
+			// If parent is current year, set the date input to today
+			if (year == new Date().getFullYear()) {
+				dialogModel.initialDate = new Date().toJSON().slice(0,10);
+			}
+		}
+		// If it's the root album
+		else if (this.model.attributes.albumType === 'root') {
+			// TODO: if parent is the root album, only allow creation of a year album
+			// Would be nice if we could restrict the HTML5 type="month" picker to
+			// just pick years via its step="12" attribute, but it's only supported
+			// in Safari not Chrome.  So instead the input type should probably be
+			// a number field that goes from 1950 to the current year, defaulting to
+			// the current year, like this:
+			//<input type="number" min="1950" max="2014" value="2014">
+		}
+		// Else it's a week a.k.a day album
+		else if (this.model.attributes.albumType === 'week') {
+			// Don't show date picker: date is same as parent
+			dialogModel.showDate = false;
+			dialogModel.showTitle = true;
+		}
+		else {
+			throw 'Invalid album type: [' + this.model.attributes.albumType + ']';
+		}
 
 		// Blank out the display area
 		this.$el.empty();
 
 		// Generate the HTML
-		var html = app.renderTemplate('album_create_dialog', this.model.attributes);
+		var html = app.renderTemplate('album_create_dialog', dialogModel);
 
 		// Write the HTML to the DOM
 		this.$el.html(html);
-
-		// If the parent album is a year...
-		if (this.model.attributes.albumType === 'year') {
-
-			// Don't let user enter a title.  It'll be set to something like "November 8"
-			this.$el.find('input[name=title]').addClass('hidden');
-
-			var datePicker = this.$el.find('input[type=date]');
-
-			// Confine date picker to within the parent year
-			var year = this.model.attributes.pathComponent;
-			datePicker.attr('max', year + '-12-31');
-			datePicker.attr('min', year + '-01-01');
-
-			// If parent is current year, set the date input to today
-			if (year == new Date().getFullYear()) {
-				datePicker.val(new Date().toJSON().slice(0,10));
-			}
-		}
 
 		// Show the dialog
 		this.$el.parent().removeClass('hidden');
 
 		// Hook up submit button
-		this.$el.find('[name=submit]').click(this.createAlbum);
+		this.$el.find('[name=submit]').click(this.handleSubmit);
 
 		// Hook up cancel button
 		this.$el.find('.cancel').click(this.hide);
 
+		// Hook up esc key cancel
+		this.$el.keyup(function(ev) {
+			if (ev.which === 27) {
+				_this.hide();
+			}
+		});
+
 		// Submit on [ENTER] in password field
 		this.$el.find('input[name=summary]').keyup(function(ev) {
 			if (ev.which === 13) {
-				_this.createAlbum();
+				_this.handleSubmit();
 			}
 		});
 	},
 
-	createAlbum: function() {
-		console.log('I should really create album');
+	/**
+	 * Create new album form submitted.   Create the album.
+	 */
+	handleSubmit: function() {
+		// Allow subfunctions to access my 'this'
+		var _this = this;
+
+		// Clear out any previous error message
+		this.setErrorMessage();
+
+		// Get form values
+		var date = this.$el.find('[name=date]');
+		var title = this.$el.find('[name=title]');
+		var summary = this.$el.find('[name=summary]');
+
+		// Create the new album
+		Album.Store.createAlbum(this.model, date, title, summary)
+			.fail(function(errorMessage) {
+				_this.setErrorMessage(errorMessage);
+			})
+			// Successful creation
+			.done(function( data ) {
+				_this.hide();
+			});
+	},
+
+	/**
+	 * Set or clear error message
+	 */
+	setErrorMessage: function(message) {
+		var messageElement = this.$el.find('.error.message');
+		messageElement.text(message);
+		if (message) {
+			messageElement.removeClass('hidden');
+		}
+		else {
+			messageElement.addClass('hidden');
+		}
 	},
 
 	/**

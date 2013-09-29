@@ -70,6 +70,7 @@ Authentication.Model = Backbone.Model.extend({
 		// Make 'this' available to the following anonymous functions
 		var _this = this;
 
+		// Send logout request to server
 		$.post( app.restServerUrl('/logout'))
 			// A 401 during logout it means I'm already logged out
 			.fail(function(data, textStatus, xhr) {

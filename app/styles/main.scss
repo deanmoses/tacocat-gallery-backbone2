@@ -167,6 +167,17 @@ a.active:after {
 }
 
 //
+// Stuff to use in dialogs
+//
+.error.message {
+	color: #AA721E;
+	padding: .5em;
+	border: solid #E7E2A4 1px;
+	border-radius: 5px;
+	background-color: lightyellow;
+}
+
+//
 // dialog that overlays the rest of the screen
 //
 #fullscreen-dialog {
