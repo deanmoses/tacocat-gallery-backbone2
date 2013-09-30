@@ -144,7 +144,9 @@ Album.Collection = Backbone.Collection.extend({
 		// build a jQuery Deferred object to let my callers do .done() and .fail()
 		var deferred = $.Deferred();
 
+		//
 		// figure out path of new album
+		//
 		var albumPath = parentAlbum.attributes.fullPath;
 
 		// if parent is root
@@ -163,7 +165,7 @@ Album.Collection = Backbone.Collection.extend({
 			var pathComponent = $.trim(title).replace(/\s+|-+/g,"_").replace(/'|"/g,"");
 
 			if (!pathComponent) {
-				deferred.reject('Title is blank');
+				return deferred.reject('Title is blank');
 			}
 
 			// parentAlbum + title stripped of non alphanum characters
@@ -175,6 +177,9 @@ Album.Collection = Backbone.Collection.extend({
 
 		console.log('new album: ', albumPath);
 
+		//
+		// set up album fields to send to server
+		//
 		var postData = {};
 		if (title) {
 			postData.title = title;
@@ -205,7 +210,7 @@ Album.Collection = Backbone.Collection.extend({
 			.done(function(data) {
 				// TODO:  add newly created album to AlbumStore
 
-				deferred.done();
+				deferred.resolve(data);
 			});
 
 		// return the jQuery Promise so that the callers can use .then(), .always(), .done() and .fail()
@@ -597,7 +602,7 @@ Album.Views.NewAlbum = Backbone.View.extend({
 				_this.setErrorMessage(errorMessage);
 			})
 			// Successful creation
-			.done(function( data ) {
+			.done(function(data) {
 				_this.hide();
 			});
 	},
