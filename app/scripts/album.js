@@ -188,29 +188,14 @@ Album.Collection = Backbone.Collection.extend({
 			postData.summary = summary;
 		}
 
-		// Send create album request
-		$.post( app.restServerUrl('/album/' + albumPath), postData)
-			// Pass failure message back to calling view
-			.fail(function(data, textStatus, xhr) {
-				var msg = textStatus;
-				if (data.responseText) {
-					try {
-						var response = $.parseJSON(data.responseText);
-						if (response.message) {
-							msg = response.message;
-						}
-					} catch(err) {console.log("error", err)}
-				}
-				else if ('statusText' in data) {
-					msg = data.statusText;
-				}
-				deferred.reject(msg);
+		app.post('/album/' + albumPath, postData)
+			.fail(function(message){
+				deferred.reject(message);
 			})
-			// Successful creation
-			.done(function(data) {
+			.done(function(data){
 				// TODO:  add newly created album to AlbumStore
 
-				deferred.resolve(data);
+				deferred.resolve(data.message);
 			});
 
 		// return the jQuery Promise so that the callers can use .then(), .always(), .done() and .fail()

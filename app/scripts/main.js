@@ -139,7 +139,52 @@ window.app = {
 		// return cached version of development template
 		return Handlebars.templates[templateId];
 	},
-	
+
+	/**
+	 * Submit a HTTP POST to the server and understand it's basic response.
+	 */
+	post : function(restNoun, requestData) {
+		// build a jQuery Deferred object to let my callers do .done() and .fail()
+		var deferred = $.Deferred();
+
+		// do the request
+		$.post(app.restServerUrl(restNoun), requestData)
+			// Pass failure message back to caller
+			.fail(function(data, textStatus, xhr) {
+				var msg = textStatus;
+				if (data.responseText) {
+					try {
+						var response = $.parseJSON(data.responseText);
+						if (response.message) {
+							msg = response.message;
+						}
+					} catch(err) {
+						console.log("error", err)
+						deferred.reject('Error understanding response: ' + err);
+					}
+				}
+				else if ('statusText' in data) {
+					msg = data.statusText;
+				}
+				deferred.reject(msg);
+			})
+			// A 200 OK response will be in JSON form.
+			// It will always contain success=true or false.
+			.done(function(data) {
+				// success
+				if (data.success) {
+					deferred.resolve(data);
+				}
+				// fail
+				else {
+					deferred.reject(data.message);
+				}
+			});
+
+		// return the jQuery Promise so that the callers can use .then(), .always(), .done() and .fail()
+		return deferred.promise();
+	},
+
 	/**
 	 * If the passed-in caption contains any <a hrefs> that link to a gallery
 	 * URL, rewrite them to point to this UI instead.
